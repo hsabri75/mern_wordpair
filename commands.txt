@@ -1,0 +1,14 @@
+git init
+tsc --init 
+
+md backend
+md frontend
+
+cd backend
+npm init -y
+npm i express dotenv mongoose
+npm i -D typescript ts-node nodemon @types/node @types/express nodemon
+
+//  FRONT END
+npx create-react-app frontend --template typescript
+     
