@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
+import { WordPair } from '../../backend/models/WordPair'
 import './App.css'
 
 function App() {
-  type WordPair = {
-    first: string,
-    second: string
-}
+
   const [words ,setWords]=useState<WordPair[]>([]);
 
   useEffect(()=>{
@@ -26,8 +24,8 @@ function App() {
   },[])
   return (
     <div className="App">
-      {words && words.map((word)=>
-        <p key= {word.first}>{`${word.first} = ${word.second}`}</p>
+      {words && words.map(({first,second})=>
+        <p key= {first}>{`${first} = ${second}`}</p>
        )}
     </div>
   );

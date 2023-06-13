@@ -1,0 +1,11 @@
+
+
+backend user signup, login postman ile test edildi.
+types/custom.d.ts tanımlandı.
+tsconfig.json içinde "typeRoots": ["./types"] tanımlandı.
+
+Postman ile /api/bag POST { bagname: 'capitals' } denendi, "Request is not authorized" hatası veriyor.
+
+user, bag, word için route, model ve controller tanımlandı. Postman ile test edildi. (13.06.2023)
+
+

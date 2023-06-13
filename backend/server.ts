@@ -1,7 +1,10 @@
 import express, {Application, Request, Response, NextFunction} from 'express';
+import bagRoutes from './routes/bagRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import wordRoutes from './routes/wordRoutes.js';
 import dotenv from 'dotenv';
-var cors = require('cors')
+import cors from 'cors';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -9,20 +12,26 @@ dotenv.config();
 const app: Application = express();
 
 app.use(cors());
+app.use(express.json());
+
 
 app.use((req: Request,res: Response, next:NextFunction): void=>{
-    console.log(req.path, req.method);
+    console.log(req.path, req.method, req.body);
     next();
 })
+app.use('/api/user',userRoutes)
+app.use('/api/bag',bagRoutes)
+app.use('/api/word',wordRoutes)
 
-app.use('/api/words',wordRoutes)
-
-app.get('/', (req: Request,res: Response): void=>{
-    res.send('Hello TS ***');
-})
 
 
 const PORT = process.env.PORT
-app.listen(PORT, ()=>{
-    console.log(`server running on port ${PORT}`);
-})
+
+mongoose.connect((process.env.MONG_URI as string))
+    .then(()=>{
+        app.listen(PORT,()=>{
+            console.log("connected to db and listening on port ", PORT);
+        });
+    })
+    .catch((err)=>{console.log(err)})
+
