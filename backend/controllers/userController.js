@@ -21,6 +21,7 @@ const createToken = (_id) => {
 };
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
+    console.log({ bd: req.body });
     try {
         const user = yield userModel_js_1.default.login(email, password);
         const token = createToken(user._id);
@@ -28,10 +29,12 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         if (error instanceof Error) {
+            console.log("em:  ---", error.message);
             res.status(400).json({ error: error.message });
         }
         else {
             console.log("uncaught error ", error);
+            res.status(400).json({ error: "uncaught error " });
         }
     }
 });

@@ -12,21 +12,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createWords = exports.createWord = exports.getWords = exports.createBag = exports.getBags = void 0;
+exports.getBagsAndWords = exports.createWords = exports.createWord = exports.getWords = exports.createBag = exports._getBags = void 0;
 const wordModel_1 = __importDefault(require("../models/wordModel"));
 const bagModel_1 = __importDefault(require("../models/bagModel"));
 // get all wo
-const getBags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const _getBags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user) {
         const user_id = req.user._id;
         const bags = yield bagModel_1.default.find({ user_id }).sort({ createdAt: -1 });
+        console.log("get response: ", bags);
         res.status(200).json(bags);
     }
     else {
         res.status(400).json({ error: "User not logged in/ wordController" });
     }
 });
-exports.getBags = getBags;
+exports._getBags = _getBags;
+// get all wo
+const getBagsAndWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.user) {
+        const user_id = req.user._id;
+        const bags = yield bagModel_1.default.find({ user_id }).sort({ createdAt: -1 });
+        const bl = [];
+        let totalwordCount = 0;
+        for (let i = 0; i < bags.length; ++i) {
+            const bag = bags[i];
+            const bag_id = bag._id;
+            const words = yield wordModel_1.default.find({ bag_id });
+            const ws = [];
+            totalwordCount += words.length;
+            for (let j = 0; j < words.length; ++j) {
+                const word = words[j];
+                const wp = { first: word.first, second: word.second, _id: word._id.toString() };
+                ws.push(wp);
+            }
+            bl.push({
+                bag_id: bag_id.toString(),
+                bag: bag.bag,
+                words: ws
+            });
+        }
+        console.log(`${bags.length} bags, ${totalwordCount} words sent as response`);
+        res.status(200).json(bl);
+    }
+    else {
+        res.status(400).json({ error: "User not logged in/ wordController" });
+    }
+});
+exports.getBagsAndWords = getBagsAndWords;
 const _createBagFunction = (bagname, user) => __awaiter(void 0, void 0, void 0, function* () {
     if (!bagname) {
         return { status: 400, msg: "Please fill the bag name" };

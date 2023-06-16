@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react'
-import { WordPair } from '../../backend/models/WordPair'
-import './App.css'
+import { WordPair } from '../../backend/types/types'
+import Home from './pages/Home';
+import Login from './pages/Login';
+import { useAuthContext } from './hooks/useAuthContext';
+
 
 function App() {
 
-  const [words ,setWords]=useState<WordPair[]>([]);
+  const {user}=useAuthContext();
+  
 
   useEffect(()=>{
     const fetchWords=async () => {
+      
       const resp = await fetch("http://localhost:4001/api/words");
       console.log(resp)
       const json = await resp.json();
@@ -16,17 +21,18 @@ function App() {
       console.log({js});
       if(resp.ok){ 
         console.log("resp ok ! hus")       
-        setWords(js);
-        console.log({words})
+
       }
+      
     }
-    fetchWords();
+    //fetchWords();
   },[])
   return (
     <div className="App">
-      {words && words.map(({first,second})=>
-        <p key= {first}>{`${first} = ${second}`}</p>
-       )}
+      <Home/>
+      {!user && <Login/>}      
+      
+
     </div>
   );
 }

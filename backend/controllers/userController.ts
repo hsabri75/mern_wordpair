@@ -10,15 +10,18 @@ const createToken = (_id:string)=>{
 
 const loginUser= async (req: Request,res: Response)=>{
     const {email, password}= req.body
+    console.log({bd: req.body})
     try {
         const user = await User.login(email, password)
         const token = createToken(user._id)
         res.status(200).json({email, token})
     } catch (error) {
         if(error instanceof Error){
+            console.log("em:  ---",error.message)
             res.status(400).json({error:error.message})
         }else{
             console.log("uncaught error ", error)
+            res.status(400).json({error:"uncaught error "})
         }        
     }
 }

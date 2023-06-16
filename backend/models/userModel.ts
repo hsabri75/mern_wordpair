@@ -1,13 +1,10 @@
 import mongoose from 'mongoose';
 import bcrypt  from 'bcrypt';
 import validator  from 'validator';
+import IUser from './IUser';
 const Schema = mongoose.Schema
 
-interface IUser {
-    email: string;
-    password:string;
 
-  }
   
   interface UserModel extends mongoose.Model<IUser> {
     login(email:string,password:string): any;

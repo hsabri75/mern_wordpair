@@ -1,17 +1,52 @@
 import express, {Request, Response} from 'express';
 import Word from '../models/wordModel';
 import jwt from 'jsonwebtoken'
+import { WordPair, BagList, BagWords } from '../types/types';
 
 
 import Bag from "../models/bagModel";
 
 
 // get all wo
-const getBags = async (req: Request, res: Response) => {
+const _getBags = async (req: Request, res: Response) => {
   if(req.user){
     const user_id = req.user._id;
     const bags = await Bag.find({ user_id }).sort({ createdAt: -1 });
+    console.log("get response: ",bags)
     res.status(200).json(bags);
+  }else{
+    res.status(400).json({error:"User not logged in/ wordController"})
+  }  
+};
+
+
+
+// get all wo
+const getBagsAndWords = async (req: Request, res: Response) => {
+  if(req.user){
+    const user_id = req.user._id;
+    const bags = await Bag.find({ user_id }).sort({ createdAt: -1 });
+    const bl: BagList = [];
+    let totalwordCount=0;
+    for(let i=0;i<bags.length;++i){
+      const bag= bags[i]
+      const bag_id = bag._id;
+      const words = await Word.find({ bag_id });      
+      const ws :WordPair[]=[]
+      totalwordCount+=words.length
+      for(let j=0;j<words.length;++j){
+        const word = words[j]
+        const wp:WordPair={first:word.first,second:word.second,_id:word._id.toString()}      
+        ws.push(wp)
+      }
+      bl.push({
+        bag_id:bag_id.toString(),
+        bag:bag.bag,
+        words:ws
+      })
+    }
+    console.log(`${bags.length} bags, ${totalwordCount} words sent as response`)
+    res.status(200).json(bl);
   }else{
     res.status(400).json({error:"User not logged in/ wordController"})
   }  
@@ -155,4 +190,4 @@ const createWord = async (req: Request, res:Response) => {
   res.status(status).json(msg)
 };
 
-export { getBags, createBag, getWords, createWord, createWords };
+export { _getBags, createBag, getWords, createWord, createWords, getBagsAndWords };
