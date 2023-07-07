@@ -40,7 +40,7 @@ const AddWord = (props:{bagName:string})=>{
     }
 
     return(
-        <div>
+        <div className="add">
             <label>Word Pair:</label>
             <input type="text" value={first} onChange={handleChangeFirst}/>
             <input type="text" value={second} onChange={handleChangeSecond}/>

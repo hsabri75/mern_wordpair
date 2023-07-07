@@ -27,7 +27,7 @@ const AddBag = ()=>{
     }
 
     return(
-        <div>
+        <div className="add">
             <label>Bag Name:</label>
             <input type="text" value={name} onChange={handleChange}/>
             <button disabled={disable} onClick={handleClick}>New Bag</button>

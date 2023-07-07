@@ -26,13 +26,13 @@ const WordList = (props: { edittable: boolean; })=>{
 
 
             {bagName && getBag(bagName).words.map((w)=> 
-            <div key={w.first}>
+            <div className="item" key={w.first}>
                 <h4 > {`${w.first}=${w.second}`} </h4>
                 {props.edittable && <button onClick={()=>{handleDelete(getBag(bagName).bag_id, w._id)}}>Delete Word</button>}
             </div>                   
                 )} 
                 
-                {!props.edittable && typeof bagName==='string' && <Link to={`/edit/words/${bagName}`}>Edit</Link>}
+                {!props.edittable && typeof bagName==='string' && <Link className="edit" to={`/edit/words/${bagName}`}>Edit</Link>}
 
         </div>
     )

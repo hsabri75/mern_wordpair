@@ -11,3 +11,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.topbar{
+  background-color: aqua;
+}
+
+.edit{
+  background-color: burlywood;
+}
+
+.add{
+  background-color: darkkhaki;
+}
+
+.item{
+  display: flex;
+  border: 1px solid #ddd;
+  height: 35px;
+  padding: 5px;
+  margin: 5px;
+  
+}

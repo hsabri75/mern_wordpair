@@ -14,14 +14,14 @@ function BagList(props: { edittable: boolean }){
         return (
             <div>
                 {bags.map((bag)=>            
-                    <div key= {bag.bag}>
+                    <div className="item" key= {bag.bag}>
                     <Link  to={getLink(bag)} >
                         <p>{getDisplayText(bag) }  </p>                                        
                     </Link>
                     {props.edittable && bag.words.length===0 && <button onClick={()=> {handleDelete(bag.bag_id)}}>delete</button>}
                     </div>
                 )}
-                {!props.edittable && <Link to='/edit/bags'>Edit</Link>}
+                {!props.edittable && <Link className="edit" to='/edit/bags'>Edit</Link>}
             </div>            
         )
     
