@@ -1,36 +1,45 @@
-import { useEffect, useState } from 'react'
-import { WordPair } from '../../backend/types/types'
-import Home from './pages/Home';
+//import Home from './pages/Home';
 import Login from './pages/Login';
 import { useAuthContext } from './hooks/useAuthContext';
-
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import WordList from './components/WordList';
+import Bags from './pages/Bags';
+import Words from './pages/Words';
 
 function App() {
 
   const {user}=useAuthContext();
   
 
-  useEffect(()=>{
-    const fetchWords=async () => {
-      
-      const resp = await fetch("http://localhost:4001/api/words");
-      console.log(resp)
-      const json = await resp.json();
-      const js = await JSON.parse(json);
-      console.log({json});
-      console.log({js});
-      if(resp.ok){ 
-        console.log("resp ok ! hus")       
-
-      }
-      
-    }
-    //fetchWords();
-  },[])
   return (
     <div className="App">
-      <Home/>
-      {!user && <Login/>}      
+      <BrowserRouter>
+      <Routes>
+        
+        <Route
+              path="/login"
+              element={!user ? <Login/> : <Navigate to="/"/>}
+            />
+        <Route
+              path="/words/:bagName"
+              element={ user ? <Words edittable={false}/> : <Navigate to="/login"/>}
+            />
+          <Route
+              path="/edit/words/:bagName"
+              element={ user ? <Words edittable={true} /> : <Navigate to="/login"/>}
+            />
+          <Route
+              path="/edit/bags"
+              element={ user ? <Bags edittable={true}/> : <Navigate to="/login"/>}
+            />
+            <Route
+              path="/"
+              element={user ? <Bags edittable={false}/> : <Navigate to="/login"/>}
+            />
+            
+      </Routes>
+      </BrowserRouter>
+      {console.log({user})}
       
 
     </div>

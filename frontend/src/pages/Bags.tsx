@@ -1,9 +1,14 @@
-import { ReactChild, ReactFragment, ReactPortal, useEffect } from "react";
+import { useEffect } from "react";
 import { useWordContext } from "../hooks/useWordsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { WordPair, BagList, BagWords } from '../../../backend/types/types'
 
-const Home = ()=>{
+import { Link } from "react-router-dom";
+import BagList from "../components/BagList";
+import TopBar from "../components/TopBar";
+import AddBag from "../components/AddBag"
+
+const Bags = (props: { edittable: boolean })=>{
+        
     const {bags, dispatch}= useWordContext();
     const {user}=useAuthContext();
     useEffect(()=>{
@@ -19,27 +24,22 @@ const Home = ()=>{
                 dispatch({type:'SET_BAGS', payload:json})
             }
         }
-        if(user){
+        console.log({bagsHome:bags})
+        if(user && bags.length===0){
             fetchWords();
         }
     },[dispatch,user])
+
+   
     return (
         <div>
-            <h1>Home</h1>
+            <Link to='/' >Home</Link>
             <div>
-            {bags.map((bag)=>
-            <>
-                <h2 key= '${bag.bag}'>{bag.bag}</h2>
-                {bag.words.map((w)=>
-                <>
-                    <h4 key={w.first}>{`${w.first}=${w.second}`}</h4>
-                </>
-                )} 
-            </>
-                           
-            )}
+                <TopBar address=""/>              
+                <BagList edittable={props.edittable}/>          
+                {props.edittable && <AddBag/>}
             </div>
         </div>
     )
 }
-export default Home;
+export default Bags;

@@ -4,6 +4,7 @@ import './index.css'
 import App from './App'
 import { WordsContextProvider } from './context/WordContext';
 import { AuthContextProvider } from './context/AuthContext';
+import Login from './pages/Login';
 
 ReactDOM.render(
   <React.StrictMode>

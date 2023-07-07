@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBagsAndWords = exports.createWords = exports.createWord = exports.getWords = exports.createBag = exports._getBags = void 0;
+exports.deleteWord = exports.getBagsAndWords = exports.createWords = exports.createWord = exports.getWords = exports.deleteBag = exports.createBag = exports._getBags = void 0;
 const wordModel_1 = __importDefault(require("../models/wordModel"));
+const mongoose = require("mongoose");
 const bagModel_1 = __importDefault(require("../models/bagModel"));
 // get all wo
 const _getBags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,10 +89,37 @@ const _createBagFunction = (bagname, user) => __awaiter(void 0, void 0, void 0, 
         }
     }
 });
+const deleteBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { bag_id } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(bag_id)) {
+        return res.status(404).json({ error: "Not valid id" });
+    }
+    const bag = yield bagModel_1.default.findByIdAndDelete(bag_id);
+    if (!bag) {
+        return res.status(404).json({ error: "Id not found" });
+    }
+    res.status(200).json(bag);
+});
+exports.deleteBag = deleteBag;
+const deleteWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { word_id } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(word_id)) {
+        return res.status(404).json({ error: "Not valid id" });
+    }
+    const word = yield wordModel_1.default.findByIdAndDelete(word_id);
+    console.log({ word });
+    if (!word) {
+        return res.status(404).json({ error: "Id not found" });
+    }
+    res.status(200).json(word);
+});
+exports.deleteWord = deleteWord;
 const createBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { bagname } = req.body;
     const { status, msg } = yield _createBagFunction(bagname, req.user);
-    res.status(status).json(msg);
+    const js = { bag_id: msg, bag: bagname, words: [] };
+    //console.log({msg});
+    res.status(status).json(js);
 });
 exports.createBag = createBag;
 const getWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

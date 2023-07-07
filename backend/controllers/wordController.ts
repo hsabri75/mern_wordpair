@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express';
 import Word from '../models/wordModel';
 import jwt from 'jsonwebtoken'
 import { WordPair, BagList, BagWords } from '../types/types';
-
+const mongoose = require("mongoose");
 
 import Bag from "../models/bagModel";
 
@@ -78,10 +78,39 @@ const _createBagFunction = async(bagname:string, user?:jwt.JwtPayload):Promise<{
   }
 }
 
+const deleteBag = async (req: Request, res:Response) => {
+  const { bag_id } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(bag_id)) {
+    return res.status(404).json({ error: "Not valid id" });
+  }
+  const bag = await Bag.findByIdAndDelete(bag_id);
+  if (!bag) {
+    return res.status(404).json({ error: "Id not found" });
+  }
+  res.status(200).json(bag);
+};
+
+const deleteWord = async (req: Request, res:Response) => {
+  const { word_id } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(word_id)) {
+    return res.status(404).json({ error: "Not valid id" });
+  }
+  const word = await Word.findByIdAndDelete(word_id);
+  console.log({word})
+  if (!word) {
+    return res.status(404).json({ error: "Id not found" });
+  }
+  res.status(200).json(word);
+};
+
+
 const createBag = async (req: Request, res:Response) => {
   const { bagname } = req.body;
+  
   const {status,msg}=await _createBagFunction(bagname, req.user)
-  res.status(status).json(msg);
+  const js={bag_id:msg, bag:bagname, words:[]}
+  //console.log({msg});
+  res.status(status).json(js);
 };
 
 const getWords = async (req: Request, res: Response) => {
@@ -190,4 +219,4 @@ const createWord = async (req: Request, res:Response) => {
   res.status(status).json(msg)
 };
 
-export { _getBags, createBag, getWords, createWord, createWords, getBagsAndWords };
+export { _getBags, createBag, deleteBag, getWords, createWord, createWords, getBagsAndWords, deleteWord };

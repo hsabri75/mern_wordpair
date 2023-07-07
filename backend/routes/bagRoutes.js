@@ -11,4 +11,5 @@ const router = express_1.default.Router();
 router.use(requireAuth_1.default);
 router.get('/', wordController_1.getBagsAndWords);
 router.post("/", wordController_1.createBag);
+router.delete("/", wordController_1.deleteBag);
 exports.default = router;
