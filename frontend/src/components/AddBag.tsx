@@ -2,10 +2,11 @@ import { useState } from "react"
 import { useWordContext } from "../hooks/useWordsContext";
 import {useBags} from "../hooks/useBags"
 
+
 const AddBag = ()=>{
     const [name,setName] = useState("");
     const [disable, setDisable]= useState(true);
-    const {bags}= useWordContext();
+    const {bags}= useWordContext();   
     const {addBag} = useBags();
 
     const isNameWrong=(newName:string):boolean=>{

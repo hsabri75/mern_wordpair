@@ -102,5 +102,5 @@ export const useBags = ()=>{
 
 
 
-    return {addBag,deleteBag,addWord, deleteWord}
+    return {addBag, deleteBag, addWord, deleteWord}
 }

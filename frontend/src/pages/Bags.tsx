@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import BagList from "../components/BagList";
 import TopBar from "../components/TopBar";
 import AddBag from "../components/AddBag"
+import AddBagWordCsv from "../components/AddBagWordCsv";
 
 const Bags = (props: { edittable: boolean })=>{
         
@@ -38,6 +39,7 @@ const Bags = (props: { edittable: boolean })=>{
                 <TopBar address=""/>              
                 <BagList edittable={props.edittable}/>          
                 {props.edittable && <AddBag/>}
+                {props.edittable && <AddBagWordCsv/>}
             </div>
         </div>
     )
