@@ -6,7 +6,7 @@ interface Selection{
     mode: "NORMAL" | "EDIT" |"PLAY"
 }
 
-interface actionType{
+interface ActionType{
     type:"SET_BAG" | 'SET_MODE' ;
     payload:Selection;
 }
@@ -22,7 +22,7 @@ const initState:SelectionContextInterface= {
 
 export const SelectionContext = createContext(initState)
 
-export const selectionReducer = (state: SelectionContextInterface, action: actionType): SelectionContextInterface=>{
+export const selectionReducer = (state: SelectionContextInterface, action: ActionType): SelectionContextInterface=>{
     switch(action.type){        
         case 'SET_BAG':
             return {

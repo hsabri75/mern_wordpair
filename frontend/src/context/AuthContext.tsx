@@ -2,7 +2,7 @@ import React,{createContext, useReducer, useEffect, ReactNode, Dispatch, SetStat
 
 
 interface actionType{
-    type:any;
+    type: 'LOGIN' | 'LOGOUT';
     payload:any;
 }
 

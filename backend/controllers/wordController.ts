@@ -109,7 +109,6 @@ const createBag = async (req: Request, res:Response) => {
   
   const {status,msg}=await _createBagFunction(bagname, req.user)
   const js={bag_id:msg, bag:bagname, words:[]}
-  //console.log({msg});
   res.status(status).json(js);
 };
 
@@ -157,11 +156,12 @@ const createWords = async (req: Request, res:Response) => {
           }
           responseWords.push({first,second, _id:msgWord})
         }
+        const bagwords:BagWords={bag_id, bag:bagWords.bag, words:responseWords}
       //}else{
       //  res.status(stBag).json(msgBag)
       //}
       console.log("all finished")
-      res.status(200).json({msg:responseWords})
+      res.status(200).json({msg:bagwords})
       console.log({responseWords})
     }else{
       res.status(400).json({error:"User not logged in/ wordController"})

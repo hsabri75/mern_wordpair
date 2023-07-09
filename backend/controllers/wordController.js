@@ -118,7 +118,6 @@ const createBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { bagname } = req.body;
     const { status, msg } = yield _createBagFunction(bagname, req.user);
     const js = { bag_id: msg, bag: bagname, words: [] };
-    //console.log({msg});
     res.status(status).json(js);
 });
 exports.createBag = createBag;
@@ -166,11 +165,12 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
                 responseWords.push({ first, second, _id: msgWord });
             }
+            const bagwords = { bag_id, bag: bagWords.bag, words: responseWords };
             //}else{
             //  res.status(stBag).json(msgBag)
             //}
             console.log("all finished");
-            res.status(200).json({ msg: responseWords });
+            res.status(200).json({ msg: bagwords });
             console.log({ responseWords });
         }
         else {

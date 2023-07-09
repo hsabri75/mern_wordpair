@@ -1,21 +1,19 @@
 import {createContext, useReducer, Dispatch, SetStateAction, ReactNode} from 'react'
-import { BagList, BagWords } from '../../../backend/types/types';
+import { BagWords } from '../../../backend/types/types';
 
 
 interface actionType{
-    type:"SET_BAGS" | 'CREATE_BAG' | 'DELETE_BAG' | 'CREATE_WORD' | 'DELETE_WORD';
+    type:"SET_BAGS" | 'CREATE_BAG' | 'DELETE_BAG' | 'CREATE_WORDS' | 'DELETE_WORD';
     payload:any;
 }
 
 interface WordContextInterface{
-    bags: BagList;
-    //words?: any;
+    bags: BagWords[];
     dispatch?: Dispatch<SetStateAction<any>>
 }
 
 const initState:WordContextInterface= {
     bags:[],
-    //words:null
 };
 
 export const WordContext = createContext(initState)
@@ -28,42 +26,34 @@ export const wordsReducer = (state: WordContextInterface, action: actionType): W
                 bags: action.payload
             }
         case 'CREATE_BAG':
+            const crBag:BagWords=action.payload
             return {
-                bags: [action.payload, ...state.bags]                
+                bags: [crBag, ...state.bags]                
             }
         case 'DELETE_BAG':
-            const {bag_id:db_bag_id}= action.payload
+            const delBag:BagWords= action.payload
             return {
-                bags: state.bags.filter((bag)=>( bag.bag_id !== db_bag_id))               
+                bags: state.bags.filter((bag)=>( bag.bag_id !== delBag.bag_id))               
             }
-        case 'CREATE_WORD':
-            const {bag_id,wp}=action.payload
-            const bs= state.bags.filter((bag)=>( bag.bag_id === bag_id))
-            const ws=[ wp, ...bs[0].words]
-            console.log({ws})
-            const bnew= state.bags.filter((bag)=>( bag.bag_id !== bag_id))
-            const bg: BagWords={bag_id, bag:bs[0].bag, words:ws};
-            bnew.push(bg)
-            console.log({bnew})
+        case 'CREATE_WORDS':
+            const bagWord:BagWords=action.payload;
+            const existingWords= state.bags.filter((bag)=>( bag.bag_id === bagWord.bag_id))[0].words                        
+            bagWord.words= bagWord.words.concat(existingWords)
+            const filtered= state.bags.filter((bag)=>( bag.bag_id !== bagWord.bag_id))
+            filtered.push(bagWord);
+            console.log({filtered})
             return {                
-                bags: bnew
-                //words: [action.payload, ...state.words]
+                bags: filtered
             }
         case 'DELETE_WORD':
-            const {dw_bag_id,word_id}=action.payload
-            const dw_bs= state.bags.filter((bag)=>( bag.bag_id === dw_bag_id))
-            const dw_ws=dw_bs[0].words.filter((word)=>(word._id!==word_id))
-            const dw_bnew= state.bags.filter((bag)=>( bag.bag_id !== dw_bag_id))
-            const dw_bg: BagWords={bag_id:dw_bag_id, bag:dw_bs[0].bag, words:dw_ws};
-            dw_bnew.push(dw_bg)
-            return {            
-
-
-                bags: dw_bnew
-                //words: state.words.filter((w: { _id: any; })=>( w._id !== action.payload._id))
+            const delWord:BagWords= action.payload
+            const filteredWords = state.bags.filter((bag)=>
+            ( bag.bag_id === delWord.bag_id))[0].words.filter((word)=>(word._id!==delWord.words[0]._id))
+            const modified= state.bags.filter((bag)=>( bag.bag_id !== delWord.bag_id))
+            modified.push({bag_id:delWord.bag_id, bag:delWord.bag, words:filteredWords})
+            return {
+                bags: modified
             }
-        default:
-            return state
     }
 }
 type ChildrenType={

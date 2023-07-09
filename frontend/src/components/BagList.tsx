@@ -8,8 +8,8 @@ function BagList(){
     const {isEdittable,switchEdit,selectBag}=useSelection();
     const {bags}= useWordContext();
     const {deleteBag}=useBags();
-    const handleDelete=(bag_id:string)=>{
-        deleteBag(bag_id);
+    const handleDelete=(bag: BagWords)=>{
+        deleteBag(bag);
     } 
     
     const getDisplayText = (bag:BagWords) => `${bag.bag}     (${bag.words.length})   `
@@ -19,7 +19,7 @@ function BagList(){
                 {bags.map((bag)=>            
                     <div className="item" key= {bag.bag_id}>
                     <button onClick={()=>selectBag(bag.bag, bag.bag_id)} >{getDisplayText(bag) }</button>
-                    {isEdittable() && bag.words.length===0 && <button onClick={()=> {handleDelete(bag.bag_id)}}>delete</button>}
+                    {isEdittable() && bag.words.length===0 && <button onClick={()=> {handleDelete(bag)}}>delete</button>}
                     </div>
                 )}
                 {isEdittable() && <AddBag/>}                

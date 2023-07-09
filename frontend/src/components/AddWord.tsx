@@ -1,23 +1,21 @@
 import { useState } from "react"
-import { useWordContext } from "../hooks/useWordsContext";
-import {useBags} from "../hooks/useBags"
-import { WordPair } from "../../../backend/types/types";
+import { useBags } from "../hooks/useBags"
+import { BagWords, WordPair } from "../../../backend/types/types";
+import { useSelection } from "../hooks/useSelection";
 
-const AddWord = (props:{bagName:string})=>{
-    const [bag_id,setBag_id]=useState("")
+const AddWord = ()=>{
+    
     const [first,setFirst] = useState("");
     const [second,setSecond] = useState("");
     const [disable, setDisable]= useState(true);
-    const {bags}= useWordContext();
-    const {addWord} = useBags();
 
+    const {getBag}=useSelection();
+    const {addWords} = useBags();
 
     const checkWord=(newWord:WordPair):void=>{
-        const bag= bags.filter(e=>e.bag===props.bagName);
-        setBag_id(bag[0].bag_id)
-        //const newWord={first, second, _id:""}
+        const bag= getBag()
         console.log(newWord)
-        setDisable(bag[0].words.filter(w=> w.first===newWord.first || w.second===newWord.second).length>0 
+        setDisable(bag.words.filter(w=> w.first===newWord.first || w.second===newWord.second).length>0 
         || newWord.first.length===0 || newWord.second.length===0)
     }
 
@@ -29,14 +27,18 @@ const AddWord = (props:{bagName:string})=>{
         checkWord({first,second:e.target.value, _id:""})
         setSecond(e.target.value)
     }
-
-    const handleClick=()=>{
-        console.log(`${first}=${second} clicked`)
-        addWord(bag_id,{first,second, _id:""})
+    const resetInput=()=>{
         setFirst("");
         setSecond("");
         setDisable(true);
+    }
 
+    const handleClick=()=>{
+        const bag=getBag();
+        const newWord:WordPair={first,second,_id:""};
+        const bagWords:BagWords={bag_id:bag.bag_id, bag:bag.bag, words:[newWord]};
+        addWords(bagWords);
+        resetInput();
     }
 
     return(

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useWordContext } from "./useWordsContext";
-import { BagWords, WordPair } from "../../../backend/types/types";
+import { BagWords } from "../../../backend/types/types";
 export const useBags = ()=>{
     const [error, setError] =useState(null);
     const [isLoading, setIsLoading]= useState(false);
@@ -9,13 +9,13 @@ export const useBags = ()=>{
 
     const {user}=useAuthContext();
 
-    const deleteBag = async (bag_id:string)=>{
+    const deleteBag = async (bag: BagWords)=>{
         setIsLoading(true)
         setError(null)
         const response = await fetch('/api/bag',{
             method:'DELETE',
             headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
-            body: JSON.stringify({bag_id})
+            body: JSON.stringify({bag_id:bag.bag_id})
         })
         const json = await response.json()
         if(!response.ok){
@@ -24,7 +24,7 @@ export const useBags = ()=>{
         }
         if(response.ok){
             if(dispatch){
-                dispatch({type:'DELETE_BAG', payload:{bag_id}})
+                dispatch({type:'DELETE_BAG', payload:bag})
                 setIsLoading(false)
                 setError(null)
             }            
@@ -61,17 +61,6 @@ export const useBags = ()=>{
             headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
             body: JSON.stringify(bagWords)
         })
-    }
-
-    const addWord = async (bag_id:string, wp:WordPair)=>{
-        setIsLoading(true)
-        setError(null)
-        const response = await fetch('/api/word',{
-            method:'POST',
-            headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
-            body: JSON.stringify({bag_id:bag_id, first:wp.first, second:wp.second})
-        })
-
 
         const json = await response.json()
         if(!response.ok){
@@ -80,20 +69,23 @@ export const useBags = ()=>{
         }
         if(response.ok){
             if(dispatch){
-                const wpNew: WordPair={first:wp.first,second:wp.second,_id:json}
-                dispatch({type:'CREATE_WORD', payload:{bag_id, wp:wpNew}})
-                setIsLoading(false)
-                setError(null)
+                console.log(json)
+                const bw: BagWords=json.msg;
+                console.log({bw})
+                dispatch({type:'CREATE_WORDS', payload:bw})
+
             }            
         }
+
     }
-    const deleteWord = async (bag_id:string,word_id:string)=>{
+
+    const deleteWord = async (bag:BagWords)=>{
         setIsLoading(true)
         setError(null)
         const response = await fetch('/api/word',{
             method:'DELETE',
             headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
-            body: JSON.stringify({word_id})
+            body: JSON.stringify({word_id:bag.words[0]._id})
         })
         const json = await response.json()
         if(!response.ok){
@@ -102,7 +94,7 @@ export const useBags = ()=>{
         }
         if(response.ok){
             if(dispatch){
-                dispatch({type:'DELETE_WORD', payload:{dw_bag_id:bag_id, word_id}})
+                dispatch({type:'DELETE_WORD', payload:bag})
                 setIsLoading(false)
                 setError(null)
             }            
@@ -111,5 +103,5 @@ export const useBags = ()=>{
 
 
 
-    return {addBag, deleteBag, addWord, deleteWord, addWords}
+    return {addBag, deleteBag, addWords, deleteWord}
 }

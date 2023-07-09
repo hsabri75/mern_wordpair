@@ -16,13 +16,8 @@ export const useSelection=()=>{
         dispatchSel && dispatchSel({type:"SET_BAG", payload:{bagName,bag_id,mode:selection.mode}})
     }
 
-    const getBag= ():BagWords=>{
-        let i=0;
-        while(bags[i].bag_id!==selection.bag_id){
-            i++;
-        }
-        return bags[i];    
-    }
+    const getBag= ():BagWords=>  bags.filter(e=>e.bag_id===selection.bag_id)[0];
+
     const getBagName= ():string=>selection.bagName
 
     const getSelection=()=>selection

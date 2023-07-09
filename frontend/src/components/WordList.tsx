@@ -1,5 +1,6 @@
 
 
+import { BagWords, WordPair } from "../../../backend/types/types";
 import { useBags } from "../hooks/useBags";
 import { useSelection } from "../hooks/useSelection";
 import AddWord from "./AddWord";
@@ -10,11 +11,9 @@ const WordList = ()=>{
     const {isEdittable, switchEdit,getBag, getBagName}=useSelection();
     const {deleteWord}=useBags();
     
-    const handleDelete=(bag_id:string, word_id:string)=>{
-        console.log("before: ", getBagName())
-        deleteWord(bag_id,word_id);
-        console.log("after: ", getBagName() )
-
+    const handleDelete=(bag:BagWords,wp:WordPair)=>{   
+        const del:BagWords={bag_id:bag.bag_id, bag:bag.bag, words:[wp]}      
+        deleteWord(del);
     }
 
     return (
@@ -23,11 +22,11 @@ const WordList = ()=>{
             {getBag().words.map((w)=> 
             <div className="item" key={w.first}>
                 <h4 > {`${w.first}=${w.second}`} </h4>
-                {isEdittable() && <button onClick={()=>{handleDelete(getBag().bag_id, w._id)}}>Delete Word</button>}
+                {isEdittable() && <button onClick={()=>{handleDelete(getBag(), w)}}>Delete Word</button>}
             </div>                   
                 )} 
-                {isEdittable()   && <AddWord bagName={getBagName()}/>}
-                {isEdittable() &&  <AddWordList bagName={getBagName()}/>}
+                {isEdittable()   && <AddWord/>}
+                {isEdittable() &&  <AddWordList />}
                 
                 {<button onClick={switchEdit} > {isEdittable() ? "View Mode" : "Edit Mode"} </button>}
 
