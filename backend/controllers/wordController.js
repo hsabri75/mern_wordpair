@@ -134,6 +134,61 @@ const getWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getWords = getWords;
 const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const bagWords = req.body;
+    console.log("create words");
+    console.log({ bagWords, bag: bagWords.bag });
+    let fillMsg = "";
+    if (!bagWords.bag) {
+        fillMsg = fillMsg + "bag ";
+    }
+    if (!bagWords.words) {
+        fillMsg = fillMsg + "wordlist ";
+    }
+    if (fillMsg.length > 0) {
+        return res.status(400).json({ error: "Please fill the fields: " + fillMsg });
+    }
+    try {
+        if (req.user) {
+            //const {status:stBag, msg: msgBag}= await _createBagFunction(bagname,req.user)
+            //const wordIdList: WordId[]=[];
+            //if(stBag===200){
+            const bag_id = bagWords.bag_id;
+            const ws = bagWords.words;
+            const responseWords = [];
+            for (let i = 0; i < ws.length; i++) {
+                const first = ws[i].first;
+                const second = ws[i].second;
+                console.log({ bag_id, first, second });
+                const { status: stWord, msg: msgWord } = yield _createWordFunction(bag_id, first, second, req.user);
+                console.log({ stWord, msgWord });
+                if (stWord === 400) {
+                    res.status(stWord).json(msgWord);
+                }
+                responseWords.push({ first, second, _id: msgWord });
+            }
+            //}else{
+            //  res.status(stBag).json(msgBag)
+            //}
+            console.log("all finished");
+            res.status(200).json({ msg: responseWords });
+            console.log({ responseWords });
+        }
+        else {
+            res.status(400).json({ error: "User not logged in/ wordController" });
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            //console.log("err1")
+            res.status(400).json({ error: error.message });
+        }
+        else {
+            console.log("uncaught error ", error);
+        }
+    }
+});
+exports.createWords = createWords;
+const _createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { bagname, wordlist, columnSeperator, rowSeperator } = req.body;
     let fillMsg = "";
     if (!bagname) {
@@ -170,7 +225,7 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 res.status(stBag).json(msgBag);
             }
             console.log("all finished");
-            res.status(200).json({ msg: bagname });
+            res.status(200).json({ msg: "" });
         }
         else {
             res.status(400).json({ error: "User not logged in/ wordController" });
@@ -186,7 +241,6 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
 });
-exports.createWords = createWords;
 const _createWordFunction = (bag_id, first, second, user) => __awaiter(void 0, void 0, void 0, function* () {
     let fillMsg = "";
     if (!bag_id) {

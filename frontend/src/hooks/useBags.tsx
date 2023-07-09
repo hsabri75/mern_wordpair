@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useWordContext } from "./useWordsContext";
-import { WordPair } from "../../../backend/types/types";
+import { BagWords, WordPair } from "../../../backend/types/types";
 export const useBags = ()=>{
     const [error, setError] =useState(null);
     const [isLoading, setIsLoading]= useState(false);
@@ -53,6 +53,15 @@ export const useBags = ()=>{
             }            
         }
     }
+    const addWords = async (bagWords:BagWords)=>{
+        setIsLoading(true)
+        setError(null)
+        const response = await fetch('/api/word/list',{
+            method:'POST',
+            headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
+            body: JSON.stringify(bagWords)
+        })
+    }
 
     const addWord = async (bag_id:string, wp:WordPair)=>{
         setIsLoading(true)
@@ -102,5 +111,5 @@ export const useBags = ()=>{
 
 
 
-    return {addBag, deleteBag, addWord, deleteWord}
+    return {addBag, deleteBag, addWord, deleteWord, addWords}
 }

@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { useWordContext } from "../hooks/useWordsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-
-import { Link } from "react-router-dom";
 import BagList from "../components/BagList";
 import TopBar from "../components/TopBar";
-import AddBag from "../components/AddBag"
-import AddBagWordCsv from "../components/AddBagWordCsv";
+import { useSelection } from "../hooks/useSelection";
+import WordList from "../components/WordList";
 
-const Bags = (props: { edittable: boolean })=>{
-        
+
+const Bags = ()=>{
+    const {getBagName,selectBag}=useSelection();    
     const {bags, dispatch}= useWordContext();
     const {user}=useAuthContext();
     useEffect(()=>{
@@ -31,15 +30,14 @@ const Bags = (props: { edittable: boolean })=>{
         }
     },[dispatch,user])
 
+
    
     return (
         <div>
-            <Link to='/' >Home</Link>
+            <button onClick={()=>selectBag("","")} >Home</button>
             <div>
-                <TopBar address=""/>              
-                <BagList edittable={props.edittable}/>          
-                {props.edittable && <AddBag/>}
-                {props.edittable && <AddBagWordCsv/>}
+                <TopBar/>              
+                {getBagName()===""? <BagList /> :<WordList/>}
             </div>
         </div>
     )

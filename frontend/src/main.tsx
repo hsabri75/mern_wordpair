@@ -5,12 +5,15 @@ import App from './App'
 import { WordsContextProvider } from './context/WordContext';
 import { AuthContextProvider } from './context/AuthContext';
 import Login from './pages/Login';
+import { SelectionContextProvider } from './context/SelectionContext';
 
 ReactDOM.render(
   <React.StrictMode>
       <AuthContextProvider>
         <WordsContextProvider>
-          <App />
+          <SelectionContextProvider>
+            <App />
+          </SelectionContextProvider>          
         </WordsContextProvider>        
       </AuthContextProvider>    
   </React.StrictMode>,

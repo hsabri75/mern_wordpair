@@ -1,38 +1,35 @@
-import { useParams } from "react-router-dom";
-import { useWordContext } from "../hooks/useWordsContext";
-import {Link} from 'react-router-dom';
-import AddWord from "./AddWord";
-import { useBags } from "../hooks/useBags";
 
-const WordList = (props: { edittable: boolean; })=>{
-    const {bagName}=useParams();
-    const {bags, dispatch}= useWordContext();
+
+import { useBags } from "../hooks/useBags";
+import { useSelection } from "../hooks/useSelection";
+import AddWord from "./AddWord";
+import AddWordList from "./AddWordList";
+
+
+const WordList = ()=>{
+    const {isEdittable, switchEdit,getBag, getBagName}=useSelection();
     const {deleteWord}=useBags();
-    const getBag= (bagName: string)=>{
-        let i=0;
-        while(bags[i].bag!==bagName){
-            i++;
-        }
-        return bags[i];    
-    }
     
     const handleDelete=(bag_id:string, word_id:string)=>{
+        console.log("before: ", getBagName())
         deleteWord(bag_id,word_id);
+        console.log("after: ", getBagName() )
+
     }
 
     return (
         <div>
-            <h1>Word List ----- {bagName}</h1>
-
-
-            {bagName && getBag(bagName).words.map((w)=> 
+            <h1>Word List ----- {getBagName()}</h1>
+            {getBag().words.map((w)=> 
             <div className="item" key={w.first}>
                 <h4 > {`${w.first}=${w.second}`} </h4>
-                {props.edittable && <button onClick={()=>{handleDelete(getBag(bagName).bag_id, w._id)}}>Delete Word</button>}
+                {isEdittable() && <button onClick={()=>{handleDelete(getBag().bag_id, w._id)}}>Delete Word</button>}
             </div>                   
                 )} 
+                {isEdittable()   && <AddWord bagName={getBagName()}/>}
+                {isEdittable() &&  <AddWordList bagName={getBagName()}/>}
                 
-                {!props.edittable && typeof bagName==='string' && <Link className="edit" to={`/edit/words/${bagName}`}>Edit</Link>}
+                {<button onClick={switchEdit} > {isEdittable() ? "View Mode" : "Edit Mode"} </button>}
 
         </div>
     )
@@ -40,5 +37,3 @@ const WordList = (props: { edittable: boolean; })=>{
 }
 
 export default WordList;
-
-//{props.edittable && typeof bagName==='string' && <AddWord bagName={bagName}/>}

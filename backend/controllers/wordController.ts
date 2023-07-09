@@ -124,6 +124,59 @@ const getWords = async (req: Request, res: Response) => {
 };
 
 const createWords = async (req: Request, res:Response) => {
+  const bagWords:BagWords = req.body;
+  console.log("create words")
+  console.log({bagWords, bag:bagWords.bag})
+  let fillMsg= ""
+  if (!bagWords.bag) {
+    fillMsg= fillMsg+"bag "
+  }
+  if(!bagWords.words){
+    fillMsg= fillMsg+"wordlist "
+  }
+  if(fillMsg.length>0){
+    return res.status(400).json({ error: "Please fill the fields: "+fillMsg });
+  }    
+
+  try {
+    if(req.user){
+      //const {status:stBag, msg: msgBag}= await _createBagFunction(bagname,req.user)
+      //const wordIdList: WordId[]=[];
+      //if(stBag===200){
+        const bag_id=bagWords.bag_id;
+        const ws = bagWords.words 
+        const responseWords: WordPair[]=[];      
+        for(let i=0;i<ws.length;i++){
+          const first= ws[i].first
+          const second= ws[i].second
+          console.log({bag_id, first, second})
+          const {status:stWord,msg:msgWord}=await _createWordFunction(bag_id, first, second, req.user)
+          console.log({stWord,msgWord})
+          if(stWord===400){
+            res.status(stWord).json(msgWord)
+          }
+          responseWords.push({first,second, _id:msgWord})
+        }
+      //}else{
+      //  res.status(stBag).json(msgBag)
+      //}
+      console.log("all finished")
+      res.status(200).json({msg:responseWords})
+      console.log({responseWords})
+    }else{
+      res.status(400).json({error:"User not logged in/ wordController"})
+    }
+  } catch (error) {
+    if(error instanceof Error){
+      //console.log("err1")
+      res.status(400).json({error:error.message})
+  }else{
+      console.log("uncaught error ", error)
+  }   
+  }
+};
+
+const _createWords = async (req: Request, res:Response) => {
   const { bagname, wordlist, columnSeperator, rowSeperator } = req.body;
   let fillMsg= ""
   if (!bagname) {
@@ -142,9 +195,10 @@ const createWords = async (req: Request, res:Response) => {
   try {
     if(req.user){
       const {status:stBag, msg: msgBag}= await _createBagFunction(bagname,req.user)
+      
       if(stBag===200){
         const bag_id=msgBag;
-        const ws = (wordlist as string).split(rowSeperator)
+        const ws = (wordlist as string).split(rowSeperator)        
         for(let i=0;i<ws.length;i++){
           console.log({wi:ws[i]})
           const spl= ws[i].split(columnSeperator)
@@ -155,13 +209,13 @@ const createWords = async (req: Request, res:Response) => {
           console.log({stWord,msgWord})
           if(stWord===400){
             res.status(stWord).json(msgWord)
-          }
+          }        
         }
       }else{
         res.status(stBag).json(msgBag)
       }
       console.log("all finished")
-      res.status(200).json({msg:bagname})
+      res.status(200).json({msg:""})
     }else{
       res.status(400).json({error:"User not logged in/ wordController"})
     }
