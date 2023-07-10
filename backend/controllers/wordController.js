@@ -12,130 +12,97 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteWord = exports.getBagsAndWords = exports.createWords = exports.createWord = exports.getWords = exports.deleteBag = exports.createBag = exports._getBags = void 0;
+exports.deleteWord = exports.createWords = exports.deleteBag = exports.createBag = exports.getBagsAndWords = void 0;
 const wordModel_1 = __importDefault(require("../models/wordModel"));
 const mongoose = require("mongoose");
 const bagModel_1 = __importDefault(require("../models/bagModel"));
-// get all wo
-const _getBags = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.user) {
-        const user_id = req.user._id;
-        const bags = yield bagModel_1.default.find({ user_id }).sort({ createdAt: -1 });
-        console.log("get response: ", bags);
-        res.status(200).json(bags);
-    }
-    else {
+const checkUser = (res, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user) {
         res.status(400).json({ error: "User not logged in/ wordController" });
+        return false;
     }
+    return true;
 });
-exports._getBags = _getBags;
-// get all wo
 const getBagsAndWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.user) {
-        const user_id = req.user._id;
-        const bags = yield bagModel_1.default.find({ user_id }).sort({ createdAt: -1 });
-        const bl = [];
+    if (yield checkUser(res, req.user)) {
+        const bags = yield bagModel_1.default.find({ user_id: req.user._id }).sort({ createdAt: -1 });
+        const bagList = [];
         let totalwordCount = 0;
         for (let i = 0; i < bags.length; ++i) {
-            const bag = bags[i];
-            const bag_id = bag._id;
-            const words = yield wordModel_1.default.find({ bag_id });
-            const ws = [];
+            const words = yield wordModel_1.default.find({ bag_id: bags[i]._id });
+            const wordList = [];
             totalwordCount += words.length;
             for (let j = 0; j < words.length; ++j) {
-                const word = words[j];
-                const wp = { first: word.first, second: word.second, _id: word._id.toString() };
-                ws.push(wp);
+                const { first, second, _id } = words[j];
+                wordList.push({
+                    first,
+                    second,
+                    _id: _id.toString()
+                });
             }
-            bl.push({
-                bag_id: bag_id.toString(),
-                bag: bag.bag,
-                words: ws
+            bagList.push({
+                bag_id: bags[i]._id.toString(),
+                bag: bags[i].bag,
+                words: wordList
             });
         }
         console.log(`${bags.length} bags, ${totalwordCount} words sent as response`);
-        res.status(200).json(bl);
-    }
-    else {
-        res.status(400).json({ error: "User not logged in/ wordController" });
+        res.status(200).json(bagList);
     }
 });
 exports.getBagsAndWords = getBagsAndWords;
-const _createBagFunction = (bagname, user) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!bagname) {
-        return { status: 400, msg: "Please fill the bag name" };
-        //return res.status(400).json({ error: "Please fill the bag name" });
-    }
-    try {
-        if (user) {
-            const user_id = user._id;
-            const bag = yield bagModel_1.default.create({ bag: bagname, user_id });
-            return { status: 200, msg: bag._id.toString() };
-            //res.status(200).json(bag);
+const createBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield checkUser(res, req.user)) {
+        const { bagname } = req.body;
+        if (!bagname) {
+            res.status(400).json({ error: "Please fill the bag name" });
         }
-        else {
-            return { status: 400, msg: "User not logged in/ wordController" };
-            //res.status(400).json({error:"User not logged in/ wordController"})
+        try {
+            const { _id } = yield bagModel_1.default.create({ bag: bagname, user_id: req.user._id });
+            const resBag = { bag_id: _id.toString(), bag: bagname, words: [] };
+            res.status(200).json(resBag);
         }
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            return { status: 400, msg: error.message };
-            //res.status(400).json({error:error.message})
-        }
-        else {
-            //console.log("uncaught error ", error)
-            return { status: 400, msg: "Uncaught error" };
+        catch (error) {
+            if (error instanceof Error) {
+                res.status(400).json({ error: error.message });
+            }
+            else {
+                res.status(400).json({ error: "Uncaught error" });
+            }
         }
     }
 });
+exports.createBag = createBag;
 const deleteBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { bag_id } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(bag_id)) {
-        return res.status(404).json({ error: "Not valid id" });
+    if (yield checkUser(res, req.user)) {
+        const { bag_id } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(bag_id)) {
+            return res.status(404).json({ error: "Not valid id" });
+        }
+        const bag = yield bagModel_1.default.findByIdAndDelete(bag_id);
+        if (!bag) {
+            return res.status(404).json({ error: "Id not found" });
+        }
+        res.status(200).json(bag);
     }
-    const bag = yield bagModel_1.default.findByIdAndDelete(bag_id);
-    if (!bag) {
-        return res.status(404).json({ error: "Id not found" });
-    }
-    res.status(200).json(bag);
 });
 exports.deleteBag = deleteBag;
 const deleteWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { word_id } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(word_id)) {
-        return res.status(404).json({ error: "Not valid id" });
+    if (yield checkUser(res, req.user)) {
+        const { word_id } = req.body;
+        if (!mongoose.Types.ObjectId.isValid(word_id)) {
+            return res.status(404).json({ error: "Not valid id" });
+        }
+        const word = yield wordModel_1.default.findByIdAndDelete(word_id);
+        console.log({ word });
+        if (!word) {
+            return res.status(404).json({ error: "Id not found" });
+        }
+        res.status(200).json(word);
     }
-    const word = yield wordModel_1.default.findByIdAndDelete(word_id);
-    console.log({ word });
-    if (!word) {
-        return res.status(404).json({ error: "Id not found" });
-    }
-    res.status(200).json(word);
 });
 exports.deleteWord = deleteWord;
-const createBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { bagname } = req.body;
-    const { status, msg } = yield _createBagFunction(bagname, req.user);
-    const js = { bag_id: msg, bag: bagname, words: [] };
-    res.status(status).json(js);
-});
-exports.createBag = createBag;
-const getWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { bag_id } = req.body;
-    if (req.user) {
-        const words = yield wordModel_1.default.find({ bag_id });
-        res.status(200).json(words);
-    }
-    else {
-        res.status(400).json({ error: "User not logged in/ wordController" });
-    }
-});
-exports.getWords = getWords;
-const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const bagWords = req.body;
-    console.log("create words");
-    console.log({ bagWords, bag: bagWords.bag });
+const checkBag = (res, bagWords) => __awaiter(void 0, void 0, void 0, function* () {
     let fillMsg = "";
     if (!bagWords.bag) {
         fillMsg = fillMsg + "bag ";
@@ -144,144 +111,30 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         fillMsg = fillMsg + "wordlist ";
     }
     if (fillMsg.length > 0) {
-        return res.status(400).json({ error: "Please fill the fields: " + fillMsg });
+        res.status(400).json({ error: "Please fill the fields: " + fillMsg });
+        return false;
     }
-    try {
-        if (req.user) {
-            //const {status:stBag, msg: msgBag}= await _createBagFunction(bagname,req.user)
-            //const wordIdList: WordId[]=[];
-            //if(stBag===200){
-            const bag_id = bagWords.bag_id;
-            const ws = bagWords.words;
-            const responseWords = [];
-            for (let i = 0; i < ws.length; i++) {
-                const first = ws[i].first;
-                const second = ws[i].second;
-                console.log({ bag_id, first, second });
-                const { status: stWord, msg: msgWord } = yield _createWordFunction(bag_id, first, second, req.user);
-                console.log({ stWord, msgWord });
-                if (stWord === 400) {
-                    res.status(stWord).json(msgWord);
-                }
-                responseWords.push({ first, second, _id: msgWord });
+    return true;
+});
+const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const bagWords = req.body;
+    if ((yield checkBag(res, bagWords)) && (yield checkUser(res, req.user))) {
+        const { bag_id } = bagWords;
+        const ws = bagWords.words;
+        const responseWords = [];
+        for (let i = 0; i < ws.length; i++) {
+            const { first, second } = ws[i];
+            try {
+                const word = yield wordModel_1.default.create({ first, second, bag_id });
+                responseWords.push({ first, second, _id: word._id.toString() });
             }
-            const bagwords = { bag_id, bag: bagWords.bag, words: responseWords };
-            //}else{
-            //  res.status(stBag).json(msgBag)
-            //}
-            console.log("all finished");
-            res.status(200).json({ msg: bagwords });
-            console.log({ responseWords });
+            catch (error) {
+                const msg = error instanceof Error ? { msg: error.message } : { msg: "uncaught error" };
+                return res.status(400).send(msg);
+            }
         }
-        else {
-            res.status(400).json({ error: "User not logged in/ wordController" });
-        }
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            //console.log("err1")
-            res.status(400).json({ error: error.message });
-        }
-        else {
-            console.log("uncaught error ", error);
-        }
+        const bagwords = { bag_id, bag: bagWords.bag, words: responseWords };
+        res.status(200).json({ msg: bagwords });
     }
 });
 exports.createWords = createWords;
-const _createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { bagname, wordlist, columnSeperator, rowSeperator } = req.body;
-    let fillMsg = "";
-    if (!bagname) {
-        fillMsg = fillMsg + "bag ";
-    }
-    if (!wordlist) {
-        fillMsg = fillMsg + "wordlist ";
-    }
-    const cSep = columnSeperator ? columnSeperator : "\t";
-    const cRow = rowSeperator ? rowSeperator : "\n";
-    if (fillMsg !== "") {
-        return res.status(400).json({ error: "Please fill the fields: " + fillMsg });
-    }
-    try {
-        if (req.user) {
-            const { status: stBag, msg: msgBag } = yield _createBagFunction(bagname, req.user);
-            if (stBag === 200) {
-                const bag_id = msgBag;
-                const ws = wordlist.split(rowSeperator);
-                for (let i = 0; i < ws.length; i++) {
-                    console.log({ wi: ws[i] });
-                    const spl = ws[i].split(columnSeperator);
-                    const first = spl[0];
-                    const second = spl[1];
-                    console.log({ f: first, s: second });
-                    const { status: stWord, msg: msgWord } = yield _createWordFunction(bag_id, first, second, req.user);
-                    console.log({ stWord, msgWord });
-                    if (stWord === 400) {
-                        res.status(stWord).json(msgWord);
-                    }
-                }
-            }
-            else {
-                res.status(stBag).json(msgBag);
-            }
-            console.log("all finished");
-            res.status(200).json({ msg: "" });
-        }
-        else {
-            res.status(400).json({ error: "User not logged in/ wordController" });
-        }
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            //console.log("err1")
-            res.status(400).json({ error: error.message });
-        }
-        else {
-            console.log("uncaught error ", error);
-        }
-    }
-});
-const _createWordFunction = (bag_id, first, second, user) => __awaiter(void 0, void 0, void 0, function* () {
-    let fillMsg = "";
-    if (!bag_id) {
-        fillMsg = fillMsg + "bag ";
-    }
-    if (!first) {
-        fillMsg = fillMsg + "first ";
-    }
-    if (!second) {
-        fillMsg = fillMsg + "second ";
-    }
-    if (fillMsg !== "") {
-        return { status: 400, msg: "Please fill the fields: " + fillMsg };
-        //return res.status(400).json({ error: "Please fill the fields: "+fillMsg });
-    }
-    try {
-        if (user) {
-            const word = yield wordModel_1.default.create({ first, second, bag_id });
-            return { status: 200, msg: word._id.toString() };
-            //res.status(200).json(word);
-        }
-        else {
-            return { status: 400, msg: "User not logged in/ wordController" };
-            //res.status(400).json({error:"User not logged in/ wordController"})
-        }
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            console.log("err1");
-            return { status: 400, msg: error.message };
-            //res.status(400).json({error:error.message})
-        }
-        else {
-            console.log("uncaught error ", error);
-            return { status: 400, msg: "uncaught error" };
-        }
-    }
-});
-const createWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { bag_id, first, second } = req.body;
-    const { status, msg } = yield _createWordFunction(bag_id, first, second, req.user);
-    res.status(status).json(msg);
-});
-exports.createWord = createWord;

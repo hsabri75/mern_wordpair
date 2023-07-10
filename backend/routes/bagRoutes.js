@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-//import { WordPair } from '../models/WordPair';
 const wordController_1 = require("../controllers/wordController");
 const requireAuth_1 = __importDefault(require("../middleware/requireAuth"));
 const router = express_1.default.Router();

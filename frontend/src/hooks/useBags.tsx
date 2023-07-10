@@ -56,7 +56,7 @@ export const useBags = ()=>{
     const addWords = async (bagWords:BagWords)=>{
         setIsLoading(true)
         setError(null)
-        const response = await fetch('/api/word/list',{
+        const response = await fetch('/api/word',{
             method:'POST',
             headers:{'Content-Type':'application/json', 'Authorization': `Bearer ${user.token}`},
             body: JSON.stringify(bagWords)

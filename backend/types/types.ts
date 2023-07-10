@@ -9,5 +9,12 @@ export type BagWords={
     bag: string,
     words: WordPair[]
   }
+
+export type UserType = {
+    email: string;
+    password:string;
+
+  }
+
 export type BagList= BagWords[];
 
