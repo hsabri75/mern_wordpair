@@ -1,17 +1,16 @@
 import {useState} from 'react'
 import { useLogin } from '../hooks/useLogin'
-const Login = ()=>{
+const LoginSignup = ()=>{
     const [email, setEmail] =useState('h1@gmail.com')
     const [password, setPassword] =useState('qweQWE123.')
-    const {login, error, isLoading} = useLogin()
-    const handleSubmit = async (e: React.FormEvent ) => {
+    const {loginSignup, error, isLoading} = useLogin()
+    const handleClick = async (e: React.FormEvent, type: "login" |"signup" ) => {
         e.preventDefault()
-        login(email,password)
-        console.log({email, password})
+        loginSignup(email,password,type)
     }
     return (
-        <form className='login' onSubmit={handleSubmit}> 
-            <h3>Log in</h3>
+        <form className='login' > 
+            <h3>Log in/ Sign up</h3>
             <label>Email:</label>
             <input 
                 type='email'
@@ -24,11 +23,12 @@ const Login = ()=>{
                 onChange={(e)=>setPassword(e.target.value)}
                 value={password}
             ></input>
-            <button disabled={isLoading} type="submit">login</button>
+            <button disabled={isLoading} onClick={(e: React.FormEvent ) => {handleClick(e,"login")}}>login</button>
+            <button disabled={isLoading} onClick={(e: React.FormEvent ) => {handleClick(e,"signup")}}>signup</button>
             {error && <div className='error' >{error}</div>}     
         </form>
         
     )
 }
 
-export default Login
+export default LoginSignup

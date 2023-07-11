@@ -7,7 +7,7 @@ interface Selection{
 }
 
 interface ActionType{
-    type:"SET_BAG" | 'SET_MODE' ;
+    type:"SET_BAG" | 'SET_MODE' | 'RESET' ;
     payload:Selection;
 }
 
@@ -28,16 +28,23 @@ export const selectionReducer = (state: SelectionContextInterface, action: Actio
             return {
                selection:{
                 bagName:        action.payload.bagName, 
-                bag_id:        action.payload.bag_id, 
-                mode:       state.selection.mode }
+                bag_id:         action.payload.bag_id, 
+                mode:           state.selection.mode }
             }
         case 'SET_MODE':
             return {
                selection:{
                 bagName:        state.selection.bagName, 
-                bag_id:        state.selection.bag_id,  
-                mode:       action.payload.mode }
+                bag_id:         state.selection.bag_id,  
+                mode:           action.payload.mode }
             } 
+        case 'RESET':
+            return {
+                selection:{
+                bagName:        "", 
+                bag_id:         "", 
+                mode:           "NORMAL" }
+           }
     }
 }
 

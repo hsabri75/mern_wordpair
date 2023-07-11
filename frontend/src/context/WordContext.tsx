@@ -3,7 +3,7 @@ import { BagWords } from '../../../backend/types/types';
 
 
 interface actionType{
-    type:"SET_BAGS" | 'CREATE_BAG' | 'DELETE_BAG' | 'CREATE_WORDS' | 'DELETE_WORD';
+    type:"SET_BAGS" | 'CREATE_BAG' | 'DELETE_BAG' | 'CREATE_WORDS' | 'DELETE_WORD' | 'RESET';
     payload:any;
 }
 
@@ -24,6 +24,10 @@ export const wordsReducer = (state: WordContextInterface, action: actionType): W
         case 'SET_BAGS':
             return {
                 bags: action.payload
+            }
+        case 'RESET':
+            return {
+                bags: []
             }
         case 'CREATE_BAG':
             const crBag:BagWords=action.payload

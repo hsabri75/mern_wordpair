@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { useAuthContext} from './useAuthContext';
+import { useWordContext } from "./useWordsContext";
+import { BagWords } from "../../../backend/types/types";
+import { useSelectionContext } from "./useSelectionContext";
 
 export const useLogin = ()=>{
     const [error, setError] =useState(null);
     const [isLoading, setIsLoading]= useState(false);
     const {dispatch} = useAuthContext()
+    const {dispatch: wordDispatch} = useWordContext()
+    const {dispatch: selectionDispatch} = useSelectionContext()
 
-    const login = async (email:string,password:string)=>{
+    const loginSignup = async (email:string,password:string,type:"login"|"signup")=>{
         setIsLoading(true)
         setError(null)
 
-        const response = await fetch('/api/user/login',{
+        const response = await fetch(`/api/user/${type}`,{
             method:'POST',
             headers:{'Content-Type':'application/json'},
             body: JSON.stringify({email,password})
@@ -34,11 +39,13 @@ export const useLogin = ()=>{
         localStorage.removeItem('user');
         if(dispatch){
             dispatch({type:'LOGOUT'})
+            wordDispatch && wordDispatch({type:"RESET"})
+            selectionDispatch && selectionDispatch({type:"RESET"})
             setIsLoading(false)
         }            
 
     }
-    return {login,isLoading,error,logout}
+    return {loginSignup,isLoading,error,logout}
 
 
 }

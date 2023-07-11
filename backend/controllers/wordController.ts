@@ -16,10 +16,12 @@ const checkUser = async(res: Response, user?:jwt.JwtPayload):Promise<boolean>=>{
 
 const getBagsAndWords = async (req: Request, res: Response) => {  
   if(await checkUser(res,req.user)){
+    console.log({user:req.user})
     const bags = await Bag.find({ user_id: req.user._id }).sort({ createdAt: -1 });
     const bagList: BagList = [];
     let totalwordCount=0;
     for(let i=0;i<bags.length;++i){
+      console.log({i, user:req.user, bag: bags[i].bag})
       const words = await Word.find({ bag_id:bags[i]._id });      
       const wordList :WordPair[]=[]
       totalwordCount+=words.length

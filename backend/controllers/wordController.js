@@ -25,10 +25,12 @@ const checkUser = (res, user) => __awaiter(void 0, void 0, void 0, function* () 
 });
 const getBagsAndWords = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (yield checkUser(res, req.user)) {
+        console.log({ user: req.user });
         const bags = yield bagModel_1.default.find({ user_id: req.user._id }).sort({ createdAt: -1 });
         const bagList = [];
         let totalwordCount = 0;
         for (let i = 0; i < bags.length; ++i) {
+            console.log({ i, user: req.user, bag: bags[i].bag });
             const words = yield wordModel_1.default.find({ bag_id: bags[i]._id });
             const wordList = [];
             totalwordCount += words.length;
