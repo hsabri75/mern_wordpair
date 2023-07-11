@@ -2,12 +2,12 @@ import {createContext, useReducer, Dispatch, SetStateAction, ReactNode} from 're
 import { BagWords } from '../../../backend/types/types';
 
 
-interface actionType{
+type actionType={
     type:"SET_BAGS" | 'CREATE_BAG' | 'DELETE_BAG' | 'CREATE_WORDS' | 'DELETE_WORD' | 'RESET';
     payload:any;
 }
 
-interface WordContextInterface{
+type WordContextInterface={
     bags: BagWords[];
     dispatch?: Dispatch<SetStateAction<any>>
 }
@@ -54,7 +54,7 @@ export const wordsReducer = (state: WordContextInterface, action: actionType): W
             const filteredWords = state.bags.filter((bag)=>
             ( bag.bag_id === delWord.bag_id))[0].words.filter((word)=>(word._id!==delWord.words[0]._id))
             const modified= state.bags.filter((bag)=>( bag.bag_id !== delWord.bag_id))
-            modified.push({bag_id:delWord.bag_id, bag:delWord.bag, words:filteredWords})
+            modified.push({bag_id:delWord.bag_id, bagname:delWord.bagname, words:filteredWords})
             return {
                 bags: modified
             }

@@ -10,7 +10,7 @@ const AddBag = ()=>{
     const {addBag} = useBags();
 
     const isNameWrong=(newName:string):boolean=>{
-        return bags.filter(e=>e.bag===newName).length>0 || newName.length===0
+        return bags.filter(e=>e.bagname===newName).length>0 || newName.length===0
     }
 
     const handleChange=(e: React.ChangeEvent<HTMLInputElement>)=>{

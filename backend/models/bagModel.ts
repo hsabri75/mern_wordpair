@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema
 
 const bagSchema = new Schema({
-    bag:{
+    bagname:{
         type: String,
         required:true,    
     },
@@ -12,7 +12,7 @@ const bagSchema = new Schema({
     },
 
 });
-bagSchema.index({ bag: 1, user_id: 1 }, { unique: true })
+bagSchema.index({ bagname: 1, user_id: 1 }, { unique: true })
 
 
 export default mongoose.model('Bag',bagSchema)

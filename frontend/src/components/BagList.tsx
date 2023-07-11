@@ -12,13 +12,13 @@ function BagList(){
         deleteBag(bag);
     } 
     
-    const getDisplayText = (bag:BagWords) => `${bag.bag}     (${bag.words.length})   `
+    const getDisplayText = (bag:BagWords) => `${bag.bagname}     (${bag.words.length})   `
     
         return (
             <div>
                 {bags.map((bag)=>            
                     <div className="item" key= {bag.bag_id}>
-                    <button onClick={()=>selectBag(bag.bag, bag.bag_id)} >{getDisplayText(bag) }</button>
+                    <button onClick={()=>selectBag(bag.bagname, bag.bag_id)} >{getDisplayText(bag) }</button>
                     {isEdittable() && bag.words.length===0 && <button onClick={()=> {handleDelete(bag)}}>delete</button>}
                     </div>
                 )}

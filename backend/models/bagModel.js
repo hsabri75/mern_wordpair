@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
 const bagSchema = new Schema({
-    bag: {
+    bagname: {
         type: String,
         required: true,
     },
@@ -15,5 +15,5 @@ const bagSchema = new Schema({
         required: true,
     },
 });
-bagSchema.index({ bag: 1, user_id: 1 }, { unique: true });
+bagSchema.index({ bagname: 1, user_id: 1 }, { unique: true });
 exports.default = mongoose_1.default.model('Bag', bagSchema);

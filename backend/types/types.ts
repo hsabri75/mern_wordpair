@@ -6,7 +6,7 @@ export type WordPair={
 
 export type BagWords={
     bag_id: string
-    bag: string,
+    bagname: string,
     words: WordPair[]
   }
 

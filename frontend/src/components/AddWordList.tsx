@@ -25,7 +25,7 @@ const AddWordList = ()=>{
             return wp
         })
         if(parsedArray.length>0){
-            const bagWords:BagWords = {bag_id:getBag().bag_id , bag: getBagName(), words: parsedArray }
+            const bagWords:BagWords = {bag_id:getBag().bag_id , bagname: getBagName(), words: parsedArray }
             console.log({bagWords}) 
             addWords(bagWords);  
             resetInput();

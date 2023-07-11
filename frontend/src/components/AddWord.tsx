@@ -36,7 +36,7 @@ const AddWord = ()=>{
     const handleClick=()=>{
         const bag=getBag();
         const newWord:WordPair={first,second,_id:""};
-        const bagWords:BagWords={bag_id:bag.bag_id, bag:bag.bag, words:[newWord]};
+        const bagWords:BagWords={bag_id:bag.bag_id, bagname:bag.bagname, words:[newWord]};
         addWords(bagWords);
         resetInput();
     }

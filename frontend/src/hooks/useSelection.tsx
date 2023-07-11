@@ -8,7 +8,7 @@ export const useSelection=()=>{
 
     const isEdittable=()=>selection.mode==="EDIT"
     const switchEdit=()=>{
-        const md = selection.mode==="NORMAL" ? "EDIT" : "NORMAL"; 
+        const md = selection.mode==="VIEW" ? "EDIT" : "VIEW"; 
         dispatchSel && dispatchSel({type:"SET_MODE", payload:{bagName:selection.bagName,bag_id:selection.bag_id  ,mode:md}})
     }
 

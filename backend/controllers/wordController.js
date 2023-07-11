@@ -30,7 +30,7 @@ const getBagsAndWords = (req, res) => __awaiter(void 0, void 0, void 0, function
         const bagList = [];
         let totalwordCount = 0;
         for (let i = 0; i < bags.length; ++i) {
-            console.log({ i, user: req.user, bag: bags[i].bag });
+            console.log({ i, user: req.user, bag: bags[i].bagname });
             const words = yield wordModel_1.default.find({ bag_id: bags[i]._id });
             const wordList = [];
             totalwordCount += words.length;
@@ -44,7 +44,7 @@ const getBagsAndWords = (req, res) => __awaiter(void 0, void 0, void 0, function
             }
             bagList.push({
                 bag_id: bags[i]._id.toString(),
-                bag: bags[i].bag,
+                bagname: bags[i].bagname,
                 words: wordList
             });
         }
@@ -56,15 +56,19 @@ exports.getBagsAndWords = getBagsAndWords;
 const createBag = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (yield checkUser(res, req.user)) {
         const { bagname } = req.body;
+        console.log({ creatBag_bagname: bagname });
         if (!bagname) {
             res.status(400).json({ error: "Please fill the bag name" });
         }
         try {
-            const { _id } = yield bagModel_1.default.create({ bag: bagname, user_id: req.user._id });
-            const resBag = { bag_id: _id.toString(), bag: bagname, words: [] };
+            console.log({ uid: req.user._id });
+            const { _id } = yield bagModel_1.default.create({ bagname: bagname, user_id: req.user._id });
+            const resBag = { bag_id: _id.toString(), bagname: bagname, words: [] };
+            console.log({ resBag });
             res.status(200).json(resBag);
         }
         catch (error) {
+            console.log({ error });
             if (error instanceof Error) {
                 res.status(400).json({ error: error.message });
             }
@@ -106,7 +110,7 @@ const deleteWord = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteWord = deleteWord;
 const checkBag = (res, bagWords) => __awaiter(void 0, void 0, void 0, function* () {
     let fillMsg = "";
-    if (!bagWords.bag) {
+    if (!bagWords.bagname) {
         fillMsg = fillMsg + "bag ";
     }
     if (!bagWords.words) {
@@ -135,8 +139,15 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 return res.status(400).send(msg);
             }
         }
-        const bagwords = { bag_id, bag: bagWords.bag, words: responseWords };
+        const bagwords = { bag_id, bagname: bagWords.bagname, words: responseWords };
         res.status(200).json({ msg: bagwords });
     }
 });
 exports.createWords = createWords;
+const _deleteAllWords = () => __awaiter(void 0, void 0, void 0, function* () {
+    const res = yield wordModel_1.default.find({ __v: 0 });
+    for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+        yield wordModel_1.default.findByIdAndDelete(res[i]._id);
+    }
+});

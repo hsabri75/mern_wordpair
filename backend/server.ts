@@ -8,7 +8,6 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
-
 const app: Application = express();
 
 app.use(cors());
@@ -34,4 +33,5 @@ mongoose.connect((process.env.MONG_URI as string))
         });
     })
     .catch((err)=>{console.log(err)})
+
 

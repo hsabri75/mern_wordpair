@@ -21,7 +21,7 @@ const getBagsAndWords = async (req: Request, res: Response) => {
     const bagList: BagList = [];
     let totalwordCount=0;
     for(let i=0;i<bags.length;++i){
-      console.log({i, user:req.user, bag: bags[i].bag})
+      console.log({i, user:req.user, bag: bags[i].bagname})
       const words = await Word.find({ bag_id:bags[i]._id });      
       const wordList :WordPair[]=[]
       totalwordCount+=words.length
@@ -35,7 +35,7 @@ const getBagsAndWords = async (req: Request, res: Response) => {
       }
       bagList.push({
         bag_id:bags[i]._id.toString(),
-        bag:bags[i].bag,
+        bagname:bags[i].bagname,
         words:wordList
       })
     }
@@ -47,14 +47,18 @@ const getBagsAndWords = async (req: Request, res: Response) => {
 const createBag = async (req: Request, res:Response):Promise<void> => {
   if(await checkUser(res,req.user)){
     const { bagname } = req.body;
+    console.log({creatBag_bagname:bagname})
     if (!bagname) {
       res.status(400).json({error:"Please fill the bag name"})
     }
     try {
-      const {_id} = await Bag.create({ bag:bagname, user_id:req.user._id });
-      const resBag:BagWords={bag_id:_id.toString(), bag:bagname, words:[]}
+      console.log({uid: req.user._id})
+      const {_id} = await Bag.create({ bagname:bagname, user_id:req.user._id });
+      const resBag:BagWords={bag_id:_id.toString(), bagname:bagname, words:[]}
+      console.log({resBag})
       res.status(200).json(resBag)  
     } catch (error) {
+      console.log({error})
       if(error instanceof Error){
         res.status(400).json({error:error.message})
       }else{
@@ -97,7 +101,7 @@ const deleteWord = async (req: Request, res:Response) => {
 
 const checkBag =async (res:Response, bagWords:BagWords):Promise<boolean> => {
   let fillMsg= ""
-  if (!bagWords.bag) {
+  if (!bagWords.bagname) {
     fillMsg= fillMsg+"bag "
   }
   if(!bagWords.words){
@@ -128,11 +132,20 @@ const createWords = async (req: Request, res:Response) => {
           return res.status(400).send(msg)          
         }
       }
-      const bagwords:BagWords={bag_id, bag:bagWords.bag, words:responseWords}
+      const bagwords:BagWords={bag_id, bagname:bagWords.bagname, words:responseWords}
       res.status(200).json({msg:bagwords})
     }
 };
 
 
+const _deleteAllWords = async () => {  
+const res = await Word.find({__v:0});
+for (let i=0;i<res.length;i++){
+  console.log(res[i])
+  await Word.findByIdAndDelete(res[i]._id)
+}
 
-export {  getBagsAndWords, createBag, deleteBag, createWords, deleteWord };
+};
+
+
+export {  getBagsAndWords, createBag, deleteBag, createWords, deleteWord  };

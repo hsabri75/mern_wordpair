@@ -12,7 +12,7 @@ const WordList = ()=>{
     const {deleteWord}=useBags();
     
     const handleDelete=(bag:BagWords,wp:WordPair)=>{   
-        const del:BagWords={bag_id:bag.bag_id, bag:bag.bag, words:[wp]}      
+        const del:BagWords={bag_id:bag.bag_id, bagname:bag.bagname, words:[wp]}      
         deleteWord(del);
     }
 

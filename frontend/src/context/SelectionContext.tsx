@@ -1,23 +1,23 @@
 import {createContext, useReducer, Dispatch, SetStateAction, ReactNode} from 'react'
 
-interface Selection{
+type Selection={
     bagName:string,
     bag_id:string
-    mode: "NORMAL" | "EDIT" |"PLAY"
-}
+    mode: "VIEW" | "EDIT"
+  }
 
-interface ActionType{
+type ActionType={
     type:"SET_BAG" | 'SET_MODE' | 'RESET' ;
     payload:Selection;
 }
 
-interface SelectionContextInterface{
+type SelectionContextInterface={
     selection: Selection;
     dispatch?: Dispatch<SetStateAction<any>>
 }
 
 const initState:SelectionContextInterface= {
-    selection:{bagName:"",bag_id:"",mode:"NORMAL"},
+    selection:{bagName:"",bag_id:"",mode:"VIEW"},
 };
 
 export const SelectionContext = createContext(initState)
@@ -43,7 +43,7 @@ export const selectionReducer = (state: SelectionContextInterface, action: Actio
                 selection:{
                 bagName:        "", 
                 bag_id:         "", 
-                mode:           "NORMAL" }
+                mode:           "VIEW" }
            }
     }
 }
