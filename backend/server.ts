@@ -5,6 +5,7 @@ import wordRoutes from './routes/wordRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
+//import { _deleteAllWords } from './controllers/wordController.js';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 
+//_deleteAllWords();
 
 app.use((req: Request,res: Response, next:NextFunction): void=>{
     console.log(req.path, req.method, req.body);

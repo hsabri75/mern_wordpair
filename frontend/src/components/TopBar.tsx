@@ -11,7 +11,7 @@ const TopBar =()=>{
         <div className="topbar">
         {user && <h2>{`email: ${user.email}`}</h2>}
         {user && <h2></h2>}
-        {user && <h3>{getSelection().bagName}({getSelection().bag_id})</h3>}
+        {user && <h3>{getSelection().bagname}({getSelection().bag_id})</h3>}
         {user && <h3>{getSelection().mode}</h3>}
         {user && <button onClick={()=> logout() }> Log Out</button>}  
         </div>

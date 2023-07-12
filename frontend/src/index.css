@@ -29,6 +29,13 @@ code {
   border: 1px solid #ddd;
   height: 35px;
   padding: 5px;
-  margin: 5px;
-  
+  margin: 5px;  
+}
+
+.selected{
+  border:solid
+}
+
+.unselected{
+  border:none
 }

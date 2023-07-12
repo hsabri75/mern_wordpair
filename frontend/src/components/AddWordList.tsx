@@ -24,11 +24,12 @@ const AddWordList = ()=>{
             const wp:WordPair={first:spl[0], second:spl[1], _id:""}
             return wp
         })
+        //console.log({parsed_array_length: parsedArray.length})
         if(parsedArray.length>0){
             const bagWords:BagWords = {bag_id:getBag().bag_id , bagname: getBagName(), words: parsedArray }
-            console.log({bagWords}) 
+            //console.log({bagWords}) 
             addWords(bagWords);  
-            resetInput();
+            //resetInput();
         }else{
             // EMPTY WORD LIST WARNING
         }

@@ -116,11 +116,10 @@ const checkBag =async (res:Response, bagWords:BagWords):Promise<boolean> => {
 
 
 const createWords = async (req: Request, res:Response) => {
-  const bagWords:BagWords = req.body;
+  const bagWords:BagWords = req.body;  
   if(await checkBag(res,bagWords) && await checkUser(res,req.user)){
-
       const {bag_id}=bagWords;
-      const ws = bagWords.words 
+      const ws = bagWords.words      
       const responseWords: WordPair[]=[];      
       for(let i=0;i<ws.length;i++){
         const {first, second}=ws[i]
@@ -129,6 +128,7 @@ const createWords = async (req: Request, res:Response) => {
           responseWords.push({first,second, _id:word._id.toString()})
         } catch (error) {
           const msg:{msg:string} = error instanceof Error ? {msg:error.message} : {msg:"uncaught error"}
+          console.log(msg)
           return res.status(400).send(msg)          
         }
       }
@@ -148,4 +148,4 @@ for (let i=0;i<res.length;i++){
 };
 
 
-export {  getBagsAndWords, createBag, deleteBag, createWords, deleteWord  };
+export {  getBagsAndWords, createBag, deleteBag, createWords, deleteWord, _deleteAllWords  };

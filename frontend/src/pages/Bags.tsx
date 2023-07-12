@@ -5,10 +5,12 @@ import BagList from "../components/BagList";
 import TopBar from "../components/TopBar";
 import { useSelection } from "../hooks/useSelection";
 import WordList from "../components/WordList";
+import GameList from "../components/GameList";
+import ModeSelection from "../components/ModeSelection";
 
 
 const Bags = ()=>{
-    const {getBagName,selectBag}=useSelection();    
+    const {getBagName,selectBag, getSelection}=useSelection();    
     const {bags, dispatch}= useWordContext();
     const {user}=useAuthContext();
     useEffect(()=>{
@@ -36,8 +38,10 @@ const Bags = ()=>{
         <div>
             <button onClick={()=>selectBag("","")} >Home</button>
             <div>
-                <TopBar/>              
-                {getBagName()===""? <BagList /> :<WordList/>}
+                <TopBar/>    
+                <ModeSelection/>          
+                {getBagName()==="" ? <BagList /> : ( getSelection().mode==='PLAY'  ? <GameList/> :  <WordList/> ) }
+                
             </div>
         </div>
     )

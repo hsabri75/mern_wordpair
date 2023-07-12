@@ -1,5 +1,5 @@
 //import Home from './pages/Home';
-import Login from './pages/LoginSignup';
+import LoginSignup from './pages/LoginSignup';
 import { useAuthContext } from './hooks/useAuthContext';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import Bags from './pages/Bags';
@@ -16,7 +16,7 @@ function App() {
         
         <Route
               path="/login"
-              element={!user ? <Login/> : <Navigate to="/"/>}
+              element={!user ? <LoginSignup/> : <Navigate to="/"/>}
             />
             <Route
               path="/"

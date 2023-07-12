@@ -1,9 +1,11 @@
 import {createContext, useReducer, Dispatch, SetStateAction, ReactNode} from 'react'
 
+type modeType= "VIEW" | "EDIT" | "PLAY"
+
 type Selection={
-    bagName:string,
+    bagname:string,
     bag_id:string
-    mode: "VIEW" | "EDIT"
+    mode: modeType
   }
 
 type ActionType={
@@ -17,7 +19,7 @@ type SelectionContextInterface={
 }
 
 const initState:SelectionContextInterface= {
-    selection:{bagName:"",bag_id:"",mode:"VIEW"},
+    selection:{bagname:"",bag_id:"",mode:"VIEW"},
 };
 
 export const SelectionContext = createContext(initState)
@@ -25,23 +27,23 @@ export const SelectionContext = createContext(initState)
 export const selectionReducer = (state: SelectionContextInterface, action: ActionType): SelectionContextInterface=>{
     switch(action.type){        
         case 'SET_BAG':
+            const {bagname,bag_id}=action.payload
+            const mode= (bagname===""&& state.selection.mode==="PLAY") ? "VIEW" : state.selection.mode 
+            console.log({bagname,bag_id,mode})
             return {
-               selection:{
-                bagName:        action.payload.bagName, 
-                bag_id:         action.payload.bag_id, 
-                mode:           state.selection.mode }
+               selection:{ bagname, bag_id, mode }
             }
         case 'SET_MODE':
             return {
                selection:{
-                bagName:        state.selection.bagName, 
+                bagname:        state.selection.bagname, 
                 bag_id:         state.selection.bag_id,  
                 mode:           action.payload.mode }
             } 
         case 'RESET':
             return {
                 selection:{
-                bagName:        "", 
+                bagname:        "", 
                 bag_id:         "", 
                 mode:           "VIEW" }
            }

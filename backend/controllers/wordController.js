@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteWord = exports.createWords = exports.deleteBag = exports.createBag = exports.getBagsAndWords = void 0;
+exports._deleteAllWords = exports.deleteWord = exports.createWords = exports.deleteBag = exports.createBag = exports.getBagsAndWords = void 0;
 const wordModel_1 = __importDefault(require("../models/wordModel"));
 const mongoose = require("mongoose");
 const bagModel_1 = __importDefault(require("../models/bagModel"));
@@ -136,6 +136,7 @@ const createWords = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             catch (error) {
                 const msg = error instanceof Error ? { msg: error.message } : { msg: "uncaught error" };
+                console.log(msg);
                 return res.status(400).send(msg);
             }
         }
@@ -151,3 +152,4 @@ const _deleteAllWords = () => __awaiter(void 0, void 0, void 0, function* () {
         yield wordModel_1.default.findByIdAndDelete(res[i]._id);
     }
 });
+exports._deleteAllWords = _deleteAllWords;

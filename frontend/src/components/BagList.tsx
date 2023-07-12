@@ -3,9 +3,10 @@ import { useSelection } from "../hooks/useSelection";
 import {useBags} from "../hooks/useBags"
 import { BagWords } from "../../../backend/types/types";
 import AddBag from "./AddBag";
+import ModeSelection from "./ModeSelection";
 
 function BagList(){
-    const {isEdittable,switchEdit,selectBag}=useSelection();
+    const {isEdittable,selectBag}=useSelection();
     const {bags}= useWordContext();
     const {deleteBag}=useBags();
     const handleDelete=(bag: BagWords)=>{
@@ -22,8 +23,7 @@ function BagList(){
                     {isEdittable() && bag.words.length===0 && <button onClick={()=> {handleDelete(bag)}}>delete</button>}
                     </div>
                 )}
-                {isEdittable() && <AddBag/>}                
-                {<button onClick={switchEdit} > {isEdittable() ? "View Mode" : "Edit Mode"} </button>}
+                {isEdittable() && <AddBag/>}             
             </div>            
         )
     

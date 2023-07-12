@@ -4,7 +4,6 @@ import './index.css'
 import App from './App'
 import { WordsContextProvider } from './context/WordContext';
 import { AuthContextProvider } from './context/AuthContext';
-import Login from './pages/LoginSignup';
 import { SelectionContextProvider } from './context/SelectionContext';
 
 ReactDOM.render(

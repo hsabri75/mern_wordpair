@@ -5,16 +5,18 @@ import { useBags } from "../hooks/useBags";
 import { useSelection } from "../hooks/useSelection";
 import AddWord from "./AddWord";
 import AddWordList from "./AddWordList";
+import ModeSelection from "./ModeSelection";
 
 
 const WordList = ()=>{
-    const {isEdittable, switchEdit,getBag, getBagName}=useSelection();
+    const {isEdittable, getBag, getBagName ,selectMode, getSelection}=useSelection();
     const {deleteWord}=useBags();
     
     const handleDelete=(bag:BagWords,wp:WordPair)=>{   
         const del:BagWords={bag_id:bag.bag_id, bagname:bag.bagname, words:[wp]}      
         deleteWord(del);
     }
+
 
     return (
         <div>
@@ -26,9 +28,7 @@ const WordList = ()=>{
             </div>                   
                 )} 
                 {isEdittable()   && <AddWord/>}
-                {isEdittable() &&  <AddWordList />}
-                
-                {<button onClick={switchEdit} > {isEdittable() ? "View Mode" : "Edit Mode"} </button>}
+                {isEdittable() &&  <AddWordList />}                
 
         </div>
     )
