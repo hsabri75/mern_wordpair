@@ -5,6 +5,7 @@ import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { useSelection } from "./hooks/useSelection"
 import Bags from './pages/Bags';
 import TestGame from './pages/TestGame';
+import MatchGame from './pages/MatchGame';
 //import Words from './pages/Words';
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
         <Route
               path="/testgame"
               element={user ? (getBagName()!=="" ? <TestGame />: <Navigate to="/"/> ): <Navigate to="/login"/>}
+            />
+        <Route
+              path="/matchgame"
+              element={user ? (getBagName()!=="" ? <MatchGame />: <Navigate to="/"/> ): <Navigate to="/login"/>}
             />
             
       </Routes>

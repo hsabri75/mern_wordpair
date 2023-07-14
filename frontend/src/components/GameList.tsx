@@ -10,7 +10,10 @@ const GameList =()=>{
             <Link to={"/testgame"}>
             <button>Test Game</button>
             </Link>
+            <Link to={"/matchgame"}>
             <button>Find Match</button>
+            </Link>
+            
         </div>
     )    
 }
