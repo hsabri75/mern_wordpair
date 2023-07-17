@@ -30,24 +30,9 @@ const arrayGenerator= ()=>{
         return removeAt(arr,index);
         return arr;
       }
-    const selectionArray=(i: number)=>{
-        const uns = arrayRange(0,i,1);
-        const sel:number[] =[];
-        const move=(from:number[],to:number[],i:number)=>{
-            const v= from[i];
-            removeAt(from,i);
-            to.push(v);
-        }
-        const select=(i:number)=>{
-            move(uns,sel,i)
-        }
-        const unSelect=(i:number)=>{
-            move(sel,uns,i)
-        }
-        return {uns,sel,select,unSelect};
-    } 
+    
 
-      return {arrayRange, getshuffled, removeValue, removeAt,selectionArray}
+      return {arrayRange, getshuffled, removeValue, removeAt}
 
 }
 export default arrayGenerator
