@@ -5,13 +5,17 @@ import App from './App'
 import { WordsContextProvider } from './context/WordContext';
 import { AuthContextProvider } from './context/AuthContext';
 import { SelectionContextProvider } from './context/SelectionContext';
+import { GameContextProvider } from './context/GameContext';
+
 
 ReactDOM.render(
   <React.StrictMode>
       <AuthContextProvider>
         <WordsContextProvider>
           <SelectionContextProvider>
-            <App />
+            <GameContextProvider>
+              <App />
+            </GameContextProvider>            
           </SelectionContextProvider>          
         </WordsContextProvider>        
       </AuthContextProvider>    

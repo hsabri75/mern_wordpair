@@ -12,30 +12,26 @@ code {
     monospace;
 }
 
-.topbar{
+.topbar {
   background-color: aqua;
 }
 
-.edit{
+.edit {
   background-color: burlywood;
 }
 
-.add{
+.add {
   background-color: darkkhaki;
 }
 
-.item{
+.item {
   display: flex;
   border: 1px solid #ddd;
   height: 35px;
   padding: 5px;
-  margin: 5px;  
+  margin: 5px;
 }
 
-.selected{
-  border:solid
-}
-
-.unselected{
-  border:none
+.selected {
+  background-color: blue;
 }
