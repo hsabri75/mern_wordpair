@@ -5,8 +5,8 @@ import BagList from "../components/BagList";
 import TopBar from "../components/TopBar";
 import { useSelection } from "../hooks/useSelection";
 import WordList from "../components/WordList";
-import GameList from "../components/GameList";
 import ModeSelection from "../components/ModeSelection";
+import MatchGame from "../components/MatchGame";
 
 
 const Bags = ()=>{
@@ -34,16 +34,13 @@ const Bags = ()=>{
 
 
    
-    return (
-        <div>
-            <button onClick={()=>selectBag("","")} >Home</button>
+    return (            
             <div>
-                <TopBar/>    
-                <ModeSelection/>          
-                {getBagName()==="" ? <BagList /> : ( getSelection().mode==='PLAY'  ? <GameList/> :  <WordList/> ) }
+                <TopBar/>           
+                {getBagName()==="" ? <BagList /> : ( getSelection().mode==='PLAY'  ? <MatchGame/> :  <WordList/> ) }
                 
             </div>
-        </div>
+
     )
 }
 export default Bags;

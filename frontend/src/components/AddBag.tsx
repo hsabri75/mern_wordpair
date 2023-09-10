@@ -21,7 +21,6 @@ const AddBag = ()=>{
     }
 
     const handleClick=()=>{
-        console.log(`${name} clicked`)
         addBag(name)
         setName("")
         setDisable(true)
@@ -30,8 +29,8 @@ const AddBag = ()=>{
     return(
         <div className="add">
             <label>Bag Name:</label>
-            <input type="text" value={name} onChange={handleChange}/>
-            <button disabled={disable} onClick={handleClick}>New Bag</button>
+            <input type="text" placeholder="Bag name" title="Enter bag name to be added" value={name} onChange={handleChange}/>
+            <button className={disable ? "margin5" : "margin5 selbutton" }   disabled={disable} onClick={handleClick}>New Bag</button>
         </div>
     )
 }

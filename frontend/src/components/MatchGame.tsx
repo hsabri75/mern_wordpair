@@ -3,7 +3,7 @@ import { useGameContext } from "../hooks/useGameContext";
 import { useSelection } from '../hooks/useSelection'
 import arrayGenerator from '../utils/arrayGenerator'
 
-import { Link } from 'react-router-dom';
+
 const MatchGame = () => {
     const { selection, dispatch } = useGameContext()
     const {getshuffled} = arrayGenerator();
@@ -19,13 +19,11 @@ const MatchGame = () => {
         },[])
 
     const _getWordText = (index: number, i: number, questionAnswer: number) => {
-        //console.log(selection)
-        //console.log(words)
         const { questions, score } = selection
         const wp = words[questions[i]];
         console.log({func:"_getWordText",wp,i,q:questions[i]})
         const answer = (score !== -1 && !isAnswerCorrect(index)) ? ` = ${wp.second}, NOT ` : ""
-        return questions ? questionAnswer === QUESTION ? `${i} ${questions[i]} ${wp.first}${answer}` : `${i} ${questions[i]} ${wp.second}` : "QUESTIONS EMPTY"
+        return questions ? questionAnswer === QUESTION ? `${wp.first}${answer}` : `${wp.second}` : "QUESTIONS EMPTY"
     }
     const isAnswerCorrect = (index: number): boolean => selection.list[QUESTION][SEL][index] === selection.list[ANSWER][SEL][index]
 
@@ -42,12 +40,16 @@ const MatchGame = () => {
     const handleCancelSelection = (index: number): void => {
         dispatch && dispatch({ type: 'DESELECT', payload: { questionAnswer: -1, index } })
     }
+    const getButtonByCorrectness=(i:number, index:number, questionAnswer:number)=>{
+        return <div key={i} ><button className= {(score !== -1 && !isAnswerCorrect(index))? "wrong margin5" :"margin5"} >{_getWordText(index, i, questionAnswer)}</button></div>
+
+    }
     const getList = (questionAnswer: number, selIndex: number) => {
         console.log({func:"getList", selection, questionAnswer, selIndex})
         return <>
             {selIndex === DESEL ?
-                selection.list[questionAnswer][selIndex].map((i, index) => (<div key={i}><button className={selection.selIndex[questionAnswer] === index ? 'selected' : ""} onClick={() => handleSelection(questionAnswer, index)} >{_getWordText(index, i, questionAnswer)}</button></div>)) :
-                selection.list[questionAnswer][selIndex].map((i, index) => (<div key={i}><button >{_getWordText(index, i, questionAnswer)}</button></div>))}
+                selection.list[questionAnswer][selIndex].map((i, index) => (<div key={i}><button className={selection.selIndex[questionAnswer] === index ? 'selected margin5 selbutton' : 'margin5 selbutton'} onClick={() => handleSelection(questionAnswer, index)} >{_getWordText(index, i, questionAnswer)}</button></div>)) :
+                selection.list[questionAnswer][selIndex].map((i, index) => getButtonByCorrectness(i,index,questionAnswer))}
         </>
     }
     const newGame = () => {
@@ -59,7 +61,7 @@ const MatchGame = () => {
         cnt = cnt < 3 ? 3 : cnt > 10 ? 10 : cnt
         console.log({func:'handleChange', cnt})
         setOptCount(cnt)
-        //
+        
     }
     const { score, optionCount } = selection
 
@@ -69,43 +71,40 @@ const MatchGame = () => {
             <h2>{score > -1 && `${score} Correct in ${optionCount}`}</h2>
             <div className='list'>
                 <div className='firstlistMG'>
-                    <h4>First</h4>
+                    
                     {getList(QUESTION, DESEL)}
                 </div>
 
                 <div className='secondlistMG'>
-                    <h4>Second</h4>
+                    
                     {getList(ANSWER, DESEL)}
                 </div>
-
+            </div>
+            <div>
+                {selection.list[ANSWER][DESEL].length === 0 && score === -1 && <button className='margin5 selbutton' onClick={handleFinish} >Check Answers</button>}
             </div>
 
             <div className='list'>
-                <div className='selfirstlistMG'>
-                    <h4>Selected First</h4>
+                <div className='selfirstlistMG'>                    
                     {getList(QUESTION, SEL)}
-                </div>
-
-                <div className='selsecondlistMG'>
-                    <h4>Selected Second</h4>
+                </div>  
+                <div className='selsecondlistMG'>                    
                     {getList(ANSWER, SEL)}
                 </div>
                 <div className='cancelMG'>
-                    <h4>Cancel Buttons</h4>
-                    {score === -1 && selection.list[ANSWER][SEL].map((i, index) => (<button className='cancelbutton' onClick={() => handleCancelSelection(index)} key={i}>X</button>))}
+
+                    {score === -1 && selection.list[ANSWER][SEL].map((i, index) => (<button className='cancelbutton margin5 selbutton' onClick={() => handleCancelSelection(index)} key={i}>X</button>))}
                 </div>
             </div>
+            
+           
 
             <div className='bottombarMG'>
-                {selection.list[ANSWER][DESEL].length === 0 && score === -1 && <button onClick={handleFinish} >Finish</button>}
-                <Link to={"/"}>
-                    <button>Exit</button>
-                </Link>
+                
                 <input type="number" value={optCount} onChange={handleChange} />
-                {<button onClick={newGame} >New Game</button>}
+                {<button className='margin5 selbutton' onClick={newGame} >New Game</button>}
 
             </div>
-
 
         </div>
     )

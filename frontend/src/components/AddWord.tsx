@@ -44,9 +44,9 @@ const AddWord = ()=>{
     return(
         <div className="add">
             <label>Word Pair:</label>
-            <input type="text" value={first} onChange={handleChangeFirst}/>
-            <input type="text" value={second} onChange={handleChangeSecond}/>
-            <button disabled={disable} onClick={handleClick}>New Word</button>
+            <input type="text" placeholder="1" title="Enter the first word of the pair"  value={first} onChange={handleChangeFirst}/>
+            <input type="text" placeholder="one" title="Enter the second word of the pair" value={second} onChange={handleChangeSecond}/>
+            <button className={disable ? "margin5" : "margin5 selbutton" } disabled={disable} onClick={handleClick}>New Word</button>
         </div>
     )
 }

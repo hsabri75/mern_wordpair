@@ -6,12 +6,14 @@ import { useSelection } from "../hooks/useSelection";
 const AddWordList = ()=>{
     const {getBag, getBagName}=useSelection();
     const [csv,setCsv] = useState("");
+    const [disable, setDisable]= useState(true);
     const {addWords} = useBags();
     const comma=","
     const semicolon=";"
 
     const handleChangeCsv=(e: React.ChangeEvent<HTMLInputElement>)=>{        
-        setCsv(e.target.value)        
+        setCsv(e.target.value)  
+        setDisable( e.target.value.length==0)      
     }
 
     const resetInput=()=>{
@@ -39,8 +41,8 @@ const AddWordList = ()=>{
     return(
         <div className="add">
             <label>Word List as Csv</label>
-            <input type="textarea" value={csv} onChange={handleChangeCsv}/>
-            <button onClick={handleClick}>New Bag with Words</button>
+            <input type="textarea" placeholder="1,one; 2,two;" title="Enter the pair list as csv" value={csv} onChange={handleChangeCsv}/>
+            <button className={disable ? "margin5" : "margin5 selbutton" } disabled={disable} onClick={handleClick}>New Words</button>
         </div>
     )
 }

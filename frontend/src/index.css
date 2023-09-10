@@ -12,16 +12,21 @@ code {
     monospace;
 }
 
+
 .topbar {
-  background-color: aqua;
+  background-color:beige;
+  
+}
+.emailsection {
+  display: flex;
+  align-items:center;
+  justify-content: end;
+  
 }
 
-.edit {
-  background-color: burlywood;
-}
 
 .add {
-  background-color: darkkhaki;
+  background-color: lightgray
 }
 
 .item {
@@ -32,6 +37,39 @@ code {
   margin: 5px;
 }
 
+.margin5{
+  margin: 5px;
+}
+
+
+.selbutton:hover{
+  transform: scale(1.1);
+}
+
 .selected {
-  background-color: blue;
+  background-color:aquamarine;  
+}
+
+
+
+.firstlistMG, .secondlistMG, .selfirstlistMG, .selsecondlistMG{
+  padding: 5px;
+  display: inline-block;
+  height: 200;
+  width: 40%;
+  border: 1px solid black;
+  margin:5px
+}
+
+.cancelMG{
+  display: inline-block;
+  width: 10%;
+}
+
+.cancelbutton{
+  display: block;
+}
+
+.wrong{
+  background-color: lightcoral;
 }

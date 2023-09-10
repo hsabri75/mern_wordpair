@@ -88,7 +88,7 @@ export const GameReducer = (state: GameContextInterface, action: GameActionType)
             }
         case 'SETOPTIONCOUNT':
             return {
-                selection: { ...state.selection, optionCount: index, questions: questions, list: [[getshuffled(index, index), []], [getshuffled(index, index), []]], selIndex: [-1, -1], }
+                selection: { ...state.selection, selectionFinished:false, score:-1, optionCount: index, questions: questions, list: [[getshuffled(index, index), []], [getshuffled(index, index), []]], selIndex: [-1, -1], }
             }
     }
 }
